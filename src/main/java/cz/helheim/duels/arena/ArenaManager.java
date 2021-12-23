@@ -13,11 +13,10 @@ import java.util.Random;
 public class ArenaManager {
 
     private static ArrayList<Arena> activeArenas;
-    private static ArrayList<Arena> availableArenas;
+    private static ArrayList<Arena> playableArenas;
 
     public ArenaManager() {
         activeArenas = new ArrayList<>();
-        availableArenas = new ArrayList<>();
     }
 
     public static void createRandomBuildUHCArena(){
@@ -26,29 +25,9 @@ public class ArenaManager {
         Bukkit.getLogger().severe(String.valueOf(id));
         Arena arena = new Arena(id, ArenaGameMode.BUILD_UHC);
         activeArenas.add(arena);
-        availableArenas.add(arena);
     }
 
     public List<Arena> getActiveArenas() { return activeArenas; }
-
-    public boolean isPlaying(Player player) {
-        for(Arena arena : getActiveArenas()) {
-            if(arena.getPlayers().contains(player.getUniqueId())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public Arena getArena(Player player) {
-        for(Arena arena : getActiveArenas()) {
-            if(arena.getPlayers().contains(player.getUniqueId())) {
-                return arena;
-            }
-        }
-        return null;
-    }
 
     public static Arena getArena(int id) {
         for(Arena arena : activeArenas) {
@@ -60,14 +39,15 @@ public class ArenaManager {
         return null;
     }
 
-    public List<Arena> getAvailableArenas(){
+    public List<Arena> getPlayableArenas(){
         for(Arena arena : activeArenas){
-            if(arena.getState().equals(GameState.IDLE) || arena.getState().equals(GameState.WAITING_FOR_OPPONENT)){
-                availableArenas.add(arena);
+            if(arena.isAvailable()){
+                playableArenas.add(arena);
             }
         }
-        return availableArenas;
+        return playableArenas;
     }
+
     public static boolean isIdle(int id) {return getArena(id).getState() == GameState.IDLE; }
 
 }

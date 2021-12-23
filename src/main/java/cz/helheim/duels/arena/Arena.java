@@ -6,6 +6,7 @@ import cz.helheim.duels.managers.ConfigManager;
 import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
 import cz.helheim.duels.modes.ArenaGameMode;
+import cz.helheim.duels.player.GamePlayer;
 import cz.helheim.duels.state.GameState;
 import cz.helheim.duels.task.PreGameCountdownTask;
 import jdk.nashorn.internal.runtime.regexp.joni.Config;
@@ -19,13 +20,14 @@ import java.util.*;
 public class Arena {
 
     private final int id;
-    private final List<UUID> players;
-    private final List<UUID> spectators;
+    private final List<GamePlayer> players;
+    private final List<GamePlayer> spectators;
     private GameState state;
     private final ArenaGameMode arenaGameMode;
     private LocalGameMap map;
     private Game game;
     private PreGameCountdownTask countdown;
+    public boolean isAvailable;
 
     public Arena(int id, ArenaGameMode arenaGameMode){
         this.map = MapManager.getRandomBuildUHCMap();
@@ -36,6 +38,7 @@ public class Arena {
         state = GameState.IDLE;
        this.arenaGameMode = arenaGameMode;
        this.countdown = new PreGameCountdownTask(this);
+       this.isAvailable = true;
     }
 
     public void start(){
@@ -43,40 +46,43 @@ public class Arena {
     }
 
     public void reset() {
-        for (UUID uuid : players) {
-            Bukkit.getPlayer(uuid).teleport(ConfigManager.getLobbySpawn());
+        for (GamePlayer player : players) {
+           player.getPlayer().teleport(ConfigManager.getLobbySpawn());
         }
         state = GameState.IDLE;
         map.unload();
         players.clear();
         countdown = new PreGameCountdownTask(this);
         game = new Game(this);
+        this.isAvailable = true;
 
     }
 
     public void sendMessage(String message) {
-        for (UUID uuid : players) {
-            Bukkit.getPlayer(uuid).sendMessage(message);
+        for (GamePlayer player : players) {
+            player.getPlayer().sendMessage(message);
         }
     }
 
-    public void addPlayer(Player player) {
-        players.add(player.getUniqueId());
+    public void addPlayer(GamePlayer player) {
+        players.add(player);
+        player.setArena(this);
         if(players.size() == 1) {
-            player.teleport(map.getSPAWN_ONE());
+            player.getPlayer().teleport(map.getSPAWN_ONE());
             setState(GameState.WAITING_FOR_OPPONENT);
         }
         if (players.size() == 2) {
-            player.teleport(map.getSPAWN_TWO());
+            player.getPlayer().teleport(map.getSPAWN_TWO());
             game.start();
         }
     }
 
-    public void removePlayer(Player player) {
-        players.remove(player.getUniqueId());
-        player.teleport(ConfigManager.getLobbySpawn());
+    public void removePlayer(GamePlayer player) {
+        players.remove(player);
+        player.setArena(null);
+        player.getPlayer().teleport(ConfigManager.getLobbySpawn());
 
-        player.getInventory().clear();
+        player.getPlayer().getInventory().clear();
 
         if(players.size() == 0){
             reset();
@@ -88,18 +94,26 @@ public class Arena {
 
     }
 
-    public void addSpectator(Player player){
-        if(!spectators.contains(player.getUniqueId())){
-            spectators.add(player.getUniqueId());
-            player.teleport(map.getSpecSpawn());
+    public void addSpectator(GamePlayer player){
+        if(!spectators.contains(player)){
+            spectators.add(player);
+            player.getPlayer().teleport(map.getSpecSpawn());
         }
+    }
+
+    public boolean isAvailable(){
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available){
+        this.isAvailable = available;
     }
 
     public int getID() {
         return id;
     }
 
-    public List<UUID> getPlayers() {
+    public List<GamePlayer> getPlayers() {
         return players;
     }
 
@@ -114,13 +128,34 @@ public class Arena {
 
     public void setState(GameState state) {
         this.state = state;
+        switch (state){
+            case IDLE:
+                setAvailable(true);
+                break;
+            case WAITING_FOR_OPPONENT:
+                setAvailable(true);
+                break;
+            case PREGAME:
+                setAvailable(true);
+                break;
+            case IN_GAME:
+                setAvailable(false);
+                break;
+            case WINNER_ANNOUNCE:
+                setAvailable(false);
+                break;
+            case END:
+                setAvailable(false);
+                break;
+
+        }
     }
 
     public PreGameCountdownTask getCountdown(){
         return this.countdown;
     }
 
-    public List<UUID> getSpectators() {
+    public List<GamePlayer> getSpectators() {
         return spectators;
     }
 

@@ -1,7 +1,9 @@
 package cz.helheim.duels;
 
+import cz.helheim.duels.Listeners.GameListener;
 import cz.helheim.duels.Listeners.JoinListener;
-import cz.helheim.duels.commands.TestCommand;
+import cz.helheim.duels.commands.DuelsCommand;
+import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -42,12 +44,15 @@ public final class Duels extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        for(LocalGameMap map : MapManager.getBuildUHCMaps()){
+            map.unload();
+        }
     }
 
     public void register(){
-        getCommand("autojoin").setExecutor(new TestCommand());
+        getCommand("duels").setExecutor(new DuelsCommand());
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new GameListener(), this);
     }
 
     public void setupFiles(){

@@ -4,6 +4,7 @@ import cz.helheim.duels.Duels;
 import cz.helheim.duels.modes.ArenaGameMode;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -27,10 +28,7 @@ public class MapManager {
                 String name = section.getString("name");
                 String mode = section.getString("mode");
                 String builder = section.getString("builder");
-                Location SPAWN_ONE = locationFromString(section.getString("SPAWN_ONE"), name);
-                Location SPAWN_TWO = locationFromString(section.getString("SPAWN_TWO"), name);
-                Location specSpawn = locationFromString(section.getString("SPECTATOR_SPAWN"), name);
-                LocalGameMap map = new LocalGameMap(Duels.getInstance().getGameMapsFolder(), false, name, ArenaGameMode.valueOf(mode), builder, SPAWN_ONE, SPAWN_TWO, specSpawn);
+                LocalGameMap map = new LocalGameMap(Duels.getInstance().getGameMapsFolder(), false, name, ArenaGameMode.valueOf(mode), builder, section);
                 buildUHCMaps.add(map);
             }
         }
@@ -40,18 +38,17 @@ public class MapManager {
         return buildUHCMaps;
     }
 
-    private static Location locationFromString(String string, String world){
+    public static Location locationFromString(String string, World world){
         String[] loc = string.split(",");
         double x = Double.parseDouble(loc[0]);
         double y = Double.parseDouble(loc[1]);
         double z = Double.parseDouble(loc[2]);
-        Location location = new Location(Bukkit.getWorld(world), x, y, z);
-        return location;
+        return new Location(world, x, y, z);
     }
 
     public static LocalGameMap getRandomBuildUHCMap(){
         Random random = new Random();
-        LocalGameMap map = getBuildUHCMaps().get(random.nextInt(getBuildUHCMaps().size()));
+        LocalGameMap map = getBuildUHCMaps().get(0); //TODO
         if(!map.isLoaded()) map.load();
         return map;
     }

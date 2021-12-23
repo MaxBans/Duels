@@ -3,37 +3,36 @@ package cz.helheim.duels.maps;
 import cz.helheim.duels.modes.ArenaGameMode;
 import cz.helheim.duels.utils.FileUtil;
 import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.io.IOException;
 
 public class LocalGameMap {
 
-    private String name;
-    private ArenaGameMode mode;
-    private String builder;
+    private final String name;
+    private final ArenaGameMode mode;
+    private final String builder;
     private Location SPAWN_ONE;
     private Location SPAWN_TWO;
     private Location specSpawn;
-
+    private final ConfigurationSection section;
     private final File sourceWorldFolder;
     private File activeWorldFolder;
 
     private World bukkitWorld;
 
-    public LocalGameMap(File worldFolder, boolean loadOnInit, String name, ArenaGameMode mode, String builder, Location spawnOne, Location spawnTwo, Location specSpawn){
+    public LocalGameMap(File worldFolder, boolean loadOnInit, String name, ArenaGameMode mode, String builder, ConfigurationSection section){
         this.name = name;
         this.builder = builder;
-        this.SPAWN_ONE = spawnOne;
-        this.SPAWN_TWO = spawnTwo;
         this.mode = mode;
-        this.specSpawn = specSpawn;
         this.sourceWorldFolder = new File(
                 worldFolder,
                 name
         );
-
         if(loadOnInit) load();
+
+        this.section = section;
     }
 
     public boolean load(){
@@ -80,6 +79,9 @@ public class LocalGameMap {
         return load();
     }
     public boolean isLoaded(){
+        if(bukkitWorld == null){
+            System.out.println("DEBUG: Error world is null");
+        }
         return this.bukkitWorld != null;
     }
 
@@ -96,10 +98,14 @@ public class LocalGameMap {
     }
 
     public Location getSPAWN_ONE() {
+        if(!isLoaded()) load();
+        this.SPAWN_ONE = MapManager.locationFromString(section.getString("SPAWN_ONE"), bukkitWorld);
         return SPAWN_ONE;
     }
 
     public Location getSPAWN_TWO() {
+        if(!isLoaded()) load();
+        this.SPAWN_TWO = MapManager.locationFromString(section.getString("SPAWN_TWO"), bukkitWorld);
         return SPAWN_TWO;
     }
 
