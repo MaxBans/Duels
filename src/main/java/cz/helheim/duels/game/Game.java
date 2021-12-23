@@ -1,8 +1,10 @@
 package cz.helheim.duels.game;
 
+import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.arena.ArenaManager;
 import cz.helheim.duels.state.GameState;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -38,7 +40,13 @@ public class Game {
         }
         Random random = new Random();
         Arena arena = arenaManager.getAvailableArenas().get(random.nextInt(arenaManager.getAvailableArenas().size()));
-        arena.addPlayer(player);
+        player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "You will be teleported to arena in 3 seconds!");
+        Bukkit.getScheduler().runTaskLater(Duels.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                arena.addPlayer(player);
+            }
+        }, 3 * 20);
 
         }
     }

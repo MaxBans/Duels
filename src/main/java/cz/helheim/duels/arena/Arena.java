@@ -28,13 +28,13 @@ public class Arena {
     private PreGameCountdownTask countdown;
 
     public Arena(int id, ArenaGameMode arenaGameMode){
+        this.map = MapManager.getRandomBuildUHCMap();
         this.id = id;
         this.game = new Game(this);
         players = new ArrayList<>();
         spectators = new ArrayList<>();
         state = GameState.IDLE;
        this.arenaGameMode = arenaGameMode;
-       this.map = MapManager.getRandomBuildUHCMap();
        this.countdown = new PreGameCountdownTask(this);
     }
 
@@ -47,6 +47,7 @@ public class Arena {
             Bukkit.getPlayer(uuid).teleport(ConfigManager.getLobbySpawn());
         }
         state = GameState.IDLE;
+        map.unload();
         players.clear();
         countdown = new PreGameCountdownTask(this);
         game = new Game(this);
