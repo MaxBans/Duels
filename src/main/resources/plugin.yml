@@ -1,0 +1,6 @@
+name: Duels
+version: '${project.version}'
+main: cz.helheim.duels.Duels
+api-version: 1.18
+authors: [ Maxbans9 ]
+description: Duels plugin for Helheim network
