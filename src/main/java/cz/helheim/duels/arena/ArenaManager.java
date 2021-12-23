@@ -20,7 +20,7 @@ public class ArenaManager {
         availableArenas = new ArrayList<>();
     }
 
-    public void createRandomBuildUHCArena(){
+    public static void createRandomBuildUHCArena(){
         Random random = new Random();
         int id = (int) ((Math.random() * (9999 - 1000)) + 1000);
         Bukkit.getLogger().severe(String.valueOf(id));
@@ -29,10 +29,10 @@ public class ArenaManager {
         availableArenas.add(arena);
     }
 
-    public static List<Arena> getActiveArenas() { return activeArenas; }
+    public List<Arena> getActiveArenas() { return activeArenas; }
 
-    public static boolean isPlaying(Player player) {
-        for(Arena arena : ArenaManager.getActiveArenas()) {
+    public boolean isPlaying(Player player) {
+        for(Arena arena : getActiveArenas()) {
             if(arena.getPlayers().contains(player.getUniqueId())) {
                 return true;
             }
@@ -41,8 +41,8 @@ public class ArenaManager {
         return false;
     }
 
-    public static Arena getArena(Player player) {
-        for(Arena arena : ArenaManager.getActiveArenas()) {
+    public Arena getArena(Player player) {
+        for(Arena arena : getActiveArenas()) {
             if(arena.getPlayers().contains(player.getUniqueId())) {
                 return arena;
             }

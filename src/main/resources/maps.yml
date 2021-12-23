@@ -1,0 +1,10 @@
+
+BuildUHC:
+  maps:
+    0:
+      name: Fractal
+      mode: BUILD_UHC
+      builder: "Nejaky Ape"
+      SPAWN_ONE: "1,65,-38"
+      SPAWN_TWO: "-1,66,-6"
+      SPECTATOR_SPAWN: 0,81,3

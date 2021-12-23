@@ -122,4 +122,8 @@ public class Arena {
     public List<UUID> getSpectators() {
         return spectators;
     }
+
+    public ArenaGameMode getArenaGameMode() {
+        return arenaGameMode;
+    }
 }
