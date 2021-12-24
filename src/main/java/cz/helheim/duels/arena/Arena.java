@@ -9,12 +9,14 @@ import cz.helheim.duels.modes.ArenaGameMode;
 import cz.helheim.duels.player.GamePlayer;
 import cz.helheim.duels.state.GameState;
 import cz.helheim.duels.task.PreGameCountdownTask;
+import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
 import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.time.chrono.HijrahChronology;
 import java.util.*;
 
 public class Arena {
@@ -27,7 +29,10 @@ public class Arena {
     private LocalGameMap map;
     private Game game;
     private PreGameCountdownTask countdown;
-    public boolean isAvailable;
+    private GamePlayer winner;
+    private GamePlayer loser;
+    private boolean isAvailable;
+    private JPerPlayerScoreboard scoreboard;
 
     public Arena(int id, ArenaGameMode arenaGameMode){
         this.map = MapManager.getRandomBuildUHCMap();
@@ -35,6 +40,8 @@ public class Arena {
         this.game = new Game(this);
         players = new ArrayList<>();
         spectators = new ArrayList<>();
+        this.winner = null;
+        this.loser = null;
         state = GameState.IDLE;
        this.arenaGameMode = arenaGameMode;
        this.countdown = new PreGameCountdownTask(this);
@@ -136,7 +143,7 @@ public class Arena {
                 setAvailable(true);
                 break;
             case PREGAME:
-                setAvailable(true);
+                setAvailable(false);
                 break;
             case IN_GAME:
                 setAvailable(false);
@@ -161,5 +168,27 @@ public class Arena {
 
     public ArenaGameMode getArenaGameMode() {
         return arenaGameMode;
+    }
+
+    public GamePlayer getWinner() {
+        return winner;
+    }
+
+    public void setWinner(GamePlayer winner) {
+        this.winner = winner;
+    }
+
+    public GamePlayer getLoser() {
+        return loser;
+    }
+
+    public void setLoser(GamePlayer loser) {
+        this.loser = loser;
+    }
+
+    public JPerPlayerScoreboard getScoreboard(){
+        List<String> list = Duels.getInstance().getConfig().getStringList("BuildUHC.Scoreboard");
+        int mapIndex = list.indexOf("%map%");
+
     }
 }
