@@ -4,6 +4,7 @@ import cz.helheim.duels.Listeners.GameListener;
 import cz.helheim.duels.Listeners.JoinListener;
 import cz.helheim.duels.commands.DuelCommand;
 import cz.helheim.duels.commands.DuelsCommand;
+import cz.helheim.duels.items.KitItemManager;
 import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
 import org.bukkit.Bukkit;
@@ -19,8 +20,10 @@ public final class Duels extends JavaPlugin {
 
     File gameMapsFolder;
     private static MapManager mapManager;
+    private static KitItemManager kitItemManager;
 
     private FileConfiguration mapsYAML;
+    private FileConfiguration kitYAML;
 
     public Duels(){
         instance = this;
@@ -38,7 +41,8 @@ public final class Duels extends JavaPlugin {
         getConfig();
         saveDefaultConfig();
         setupFiles();
-        mapManager = new MapManager(Duels.getInstance().getMapsYAML());
+        mapManager = new MapManager(getMapsYAML());
+        kitItemManager = new KitItemManager(getBuildUHCKitYAML());
         register();
 
     }
@@ -63,6 +67,8 @@ public final class Duels extends JavaPlugin {
         if(!gameMapsFolder.exists()){
             gameMapsFolder.mkdirs();
         }
+        getMapsYAML();
+        getBuildUHCKitYAML();
     }
 
     public File getGameMapsFolder(){
@@ -82,8 +88,23 @@ public final class Duels extends JavaPlugin {
         return mapsYAML;
     }
 
+    public FileConfiguration getBuildUHCKitYAML(){
+        File file = new File(this.getDataFolder(), "BuildUHC_kit.yml");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        kitYAML = YamlConfiguration.loadConfiguration(file);
+        return kitYAML;
+    }
+
     public MapManager getMapManager(){
         return mapManager;
     }
+    public static KitItemManager getKitItemManager() { return kitItemManager; }
+
 }
 

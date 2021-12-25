@@ -1,0 +1,60 @@
+kitItems:
+  0:
+    material: DIAMOND_SWORD
+    name: "Diamond Sword"
+    amount: 1
+    enchantments:
+      DAMAGE_ALL: 3
+    slot: 0
+  1:
+    material: GOLDEN_APPLE
+    name: "Golden Apple"
+    amount: 5
+    slot: 1
+  2:
+    material: DIAMOND_AXE
+    name: "Diamond Axe"
+    amount: 1
+    enchantments:
+      DIG_SPEED: 2
+    slot: 2
+  3:
+    material: WOOD
+    name: "Wood"
+    amount: 64
+    slot: 3
+armorItems:
+  0:
+    material: DIAMOND_CHESTPLATE
+    name: "Diamond Chestplate"
+    type: CHESTPLATE
+    enchantments:
+      PROTECTION_ENVIRONMENTAL: 4
+  1:
+    material: DIAMOND_LEGGINGS
+    name: "Diamond Leggings"
+    type: LEGGINGS
+    enchantments:
+      PROTECTION_ENVIRONMENTAL: 4
+  2:
+    material: DIAMOND_HELMET
+    name: "Diamond Helmet"
+    type: HELMET
+    enchantments:
+      PROTECTION_ENVIRONMENTAL: 4
+  3:
+    material: DIAMOND_BOOTS
+    name: "Diamond BOOTS"
+    type: BOOTS
+    enchantments:
+      PROTECTION_ENVIRONMENTAL: 4
+
+
+
+
+
+
+
+
+
+
