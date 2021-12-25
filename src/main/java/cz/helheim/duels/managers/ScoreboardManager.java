@@ -2,7 +2,6 @@ package cz.helheim.duels.managers;
 
 import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
-import cz.helheim.duels.player.GamePlayer;
 import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
 import org.bukkit.entity.Player;
 
@@ -15,21 +14,24 @@ public class ScoreboardManager {
 
     public static List<String> replacePlaceholders(List<String> list, Map<String, String> map) {
         List<String> replaced = new ArrayList<>();
-        for (String key : list) {
-            for (String mapKey : map.keySet()) {
-                if (key.contains(mapKey)) {
-                    String replacement = key.replace(mapKey, String.valueOf(map.get(mapKey)));
+        for(String key : list){
+            boolean contained = false;
+            for(String mapKey : map.keySet()){
+                if(key.contains(mapKey)){
+                    String replacement = key.replace(mapKey,String.valueOf(map.get(mapKey)));
                     replaced.add(replacement);
-                } else {
-                    replaced.add(key);
+                    contained = true;
                 }
+            }
+            if(!contained){
+                replaced.add(key);
             }
         }
 
         return replaced;
     }
 
-    public static JPerPlayerScoreboard getBUHCScoreboard(Arena arena, GamePlayer pl) {
+    public static JPerPlayerScoreboard getBUHCScoreboard(Arena arena, Player pl) {
         List<String> list = Duels.getInstance().getConfig().getStringList("BuildUHC.Scoreboard");
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("%map%", arena.getMap().getName());
@@ -39,9 +41,10 @@ public class ScoreboardManager {
         placeholders.put("%id%", String.valueOf(arena.getID()));
         placeholders.put("%state%", arena.getState().getFormattedName());
         placeholders.put("%arena_mode%", arena.getArenaGameMode().getFormattedName());
+        placeholders.put("%opponents_hp%", String.valueOf(arena.getOpponent(pl).getPlayer().getHealth()));
         List<String> replaced = replacePlaceholders(list, placeholders);
         JPerPlayerScoreboard scoreboard = new JPerPlayerScoreboard((player) -> {
-            return replaced.get(0);
+            return Duels.getInstance().getConfig().getString("BuildUHC.ScoreboardTitle").replace("%time%", arena.getTotalTimeCountdownTask().formatTime());
         }, (player) -> {
             return replaced;
         });

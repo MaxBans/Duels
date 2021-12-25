@@ -1,9 +1,6 @@
 package cz.helheim.duels.Listeners;
 
-import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.arena.ArenaManager;
-import cz.helheim.duels.game.Game;
-import cz.helheim.duels.player.GamePlayer;
 import cz.helheim.duels.state.GameState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,9 +13,8 @@ public class GameListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        GamePlayer gamePlayer = new GamePlayer(player);
-        if(gamePlayer.isPlaying()) {
-            if (gamePlayer.getArena().getState().equals(GameState.PREGAME) || gamePlayer.getArena().getState().equals(GameState.WAITING_FOR_OPPONENT)) {
+        if(ArenaManager.isPlaying(player)) {
+            if (ArenaManager.getArena(player).getState().equals(GameState.PREGAME) || ArenaManager.getArena(player).getState().equals(GameState.WAITING_FOR_OPPONENT)) {
                 double xTo = event.getTo().getX();
                 double xFrom = event.getFrom().getX();
                 double yTo = event.getTo().getY();

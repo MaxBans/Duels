@@ -1,11 +1,9 @@
 package cz.helheim.duels.game;
 
-import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.arena.ArenaManager;
-import cz.helheim.duels.player.GamePlayer;
 import cz.helheim.duels.state.GameState;
-import org.bukkit.Bukkit;
+import cz.helheim.duels.utils.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -25,10 +23,10 @@ public class Game {
 
     public void start(){
         arena.getPreGameCountdownTask().begin();
-        arena.sendMessage("§8[§3Duels§8]§7 Game is starting!");
+        arena.sendMessage(MessageUtil.getPrefix() + " §7 Game is starting!");
     }
 
-    public static void autoJoin(GamePlayer player) {
+    public static void autoJoin(Player player) {
         if (arenaManager.getActiveArenas().isEmpty()) {
             ArenaManager.createRandomBuildUHCArena();
         }

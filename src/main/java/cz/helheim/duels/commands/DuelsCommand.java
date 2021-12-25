@@ -1,8 +1,6 @@
 package cz.helheim.duels.commands;
 
-import cz.helheim.duels.arena.ArenaManager;
 import cz.helheim.duels.game.Game;
-import cz.helheim.duels.player.GamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,9 +15,7 @@ public class DuelsCommand implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
-        GamePlayer gamePlayer = new GamePlayer(player);
-
-        Game.autoJoin(gamePlayer);
+        Game.autoJoin(player);
         return true;
     }
 }

@@ -2,6 +2,7 @@ package cz.helheim.duels.task;
 
 import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
+import cz.helheim.duels.managers.ScoreboardManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TotalTimeCountdownTask extends BukkitRunnable {
@@ -24,7 +25,7 @@ public class TotalTimeCountdownTask extends BukkitRunnable {
             cancel();
             arena.reset();
         }else {
-            //ScoreboardManager.updateScoreboard(arena.getScoreboard());
+            arena.getScoreboard().updateScoreboard();
         }
     }
 

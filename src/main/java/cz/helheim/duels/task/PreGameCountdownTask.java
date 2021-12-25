@@ -3,7 +3,6 @@ package cz.helheim.duels.task;
 import com.connorlinfoot.titleapi.TitleAPI;
 import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
-import cz.helheim.duels.player.GamePlayer;
 import cz.helheim.duels.state.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,9 +34,8 @@ public class PreGameCountdownTask extends BukkitRunnable {
             return;
         }
             Bukkit.getLogger().severe("DEBUG: Game starting in arena: " + String.valueOf(arena.getID()));
-            for (GamePlayer pl : arena.getPlayers()) {
-                System.out.println(pl.getPlayer().getName());
-                Player player = pl.getPlayer();
+            for (UUID uuid : arena.getPlayers()) {
+                Player player = Bukkit.getPlayer(uuid);
                 if (timeLeft == 5 || timeLeft == 4) {
                     return;
                 } else if (timeLeft == 3) {

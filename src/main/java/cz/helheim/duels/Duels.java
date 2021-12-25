@@ -2,6 +2,7 @@ package cz.helheim.duels;
 
 import cz.helheim.duels.Listeners.GameListener;
 import cz.helheim.duels.Listeners.JoinListener;
+import cz.helheim.duels.commands.DuelCommand;
 import cz.helheim.duels.commands.DuelsCommand;
 import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
@@ -51,6 +52,7 @@ public final class Duels extends JavaPlugin {
 
     public void register(){
         getCommand("autojoin").setExecutor(new DuelsCommand());
+        getCommand("duel").setExecutor(new DuelCommand());
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(), this);
     }

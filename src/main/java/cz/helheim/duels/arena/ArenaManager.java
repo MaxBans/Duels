@@ -1,6 +1,5 @@
 package cz.helheim.duels.arena;
 
-import cz.helheim.duels.game.Game;
 import cz.helheim.duels.modes.ArenaGameMode;
 import cz.helheim.duels.state.GameState;
 import org.bukkit.Bukkit;
@@ -31,6 +30,25 @@ public class ArenaManager {
 
     public List<Arena> getActiveArenas() { return activeArenas; }
 
+    public static boolean isPlaying(Player player) {
+        for(Arena arena : activeArenas) {
+            if(arena.getPlayers().contains(player.getUniqueId())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static Arena getArena(Player player) {
+        for(Arena arena : activeArenas) {
+            if(arena.getPlayers().contains(player.getUniqueId())) {
+                return arena;
+            }
+        }
+        return null;
+    }
+
     public static Arena getArena(int id) {
         for(Arena arena : activeArenas) {
             if(arena.getID() == id) {
@@ -40,6 +58,9 @@ public class ArenaManager {
 
         return null;
     }
+
+    public static boolean isInGame(int id) {return getArena(id).getState() == GameState.IN_GAME; }
+
 
     public List<Arena> getPlayableArenas(){
         if(activeArenas.isEmpty()){

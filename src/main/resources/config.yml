@@ -1,13 +1,17 @@
 lobby:
   world: "world"
   x: 50
-  y: 60
-  z: 70
+  y: 79
+  z: 68
 
 BuildUHC:
+  ScoreboardTitle: "&3&lBuildUHC &f | %time%"
   Scoreboard:
-    - "&3&lBuildUC &f | %time%"
-    - "&7ID: %id%"
+    - "&7ID:&f %id%"
     - "&7&lMap:&r&b %map%"
     - " "
     - "&fOpponent:&b %opponent%"
+    - " "
+    - "Test line"
+    - ""
+    - "&3mc.helheim.cz"

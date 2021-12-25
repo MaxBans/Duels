@@ -6,28 +6,30 @@ import cz.helheim.duels.managers.ConfigManager;
 import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
 import cz.helheim.duels.modes.ArenaGameMode;
-import cz.helheim.duels.player.GamePlayer;
 import cz.helheim.duels.state.GameState;
 import cz.helheim.duels.task.PreGameCountdownTask;
 import cz.helheim.duels.task.TotalTimeCountdownTask;
+import cz.helheim.duels.utils.MessageUtil;
 import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public class Arena {
 
     private final int id;
-    private final List<GamePlayer> players;
-    private final List<GamePlayer> spectators;
+    private final List<UUID> players;
+    private final List<UUID> spectators;
     private GameState state;
     private final ArenaGameMode arenaGameMode;
     private LocalGameMap map;
     private Game game;
     private PreGameCountdownTask preGameCountdownTask;
     private final TotalTimeCountdownTask totalTimeCountdownTask;
-    private GamePlayer winner;
-    private GamePlayer loser;
+    private Player winner;
+    private Player loser;
     private boolean isAvailable;
     private JPerPlayerScoreboard scoreboard;
 
@@ -50,15 +52,17 @@ public class Arena {
         setState(GameState.IN_GAME);
         totalTimeCountdownTask.begin();
         sendMessage(ChatColor.GREEN + "Game started!");
-        for(GamePlayer player : players){
+        for(UUID uuid : players){
+            Player player = Bukkit.getPlayer(uuid);
             this.scoreboard = ScoreboardManager.getBUHCScoreboard(this, player);
-            ScoreboardManager.addToScoreboard(getScoreboard(), player.getPlayer());
+            ScoreboardManager.addToScoreboard(getScoreboard(), player);
         }
     }
 
     public void reset() {
-        for (GamePlayer player : players) {
-           player.getPlayer().teleport(ConfigManager.getLobbySpawn());
+        for (UUID uuid : players) {
+            Player player = Bukkit.getPlayer(uuid);
+           player.teleport(ConfigManager.getLobbySpawn());
         }
         state = GameState.IDLE;
         map.unload();
@@ -74,14 +78,15 @@ public class Arena {
     }
 
     public void sendMessage(String message) {
-        for (GamePlayer player : players) {
-            player.getPlayer().sendMessage(message);
+        for (UUID uuid : players) {
+            Player player = Bukkit.getPlayer(uuid);
+            player.sendMessage(message);
         }
     }
 
-    public void addPlayer(GamePlayer player) {
-        players.add(player);
-        player.setArena(this);
+    public void addPlayer(Player player) {
+        players.add(player.getUniqueId());
+        sendMessage(MessageUtil.getPrefix() + " §3" + player.getPlayer().getName() + " §7joined the game! §3(" + players.size() + ")");
         if(players.size() == 1) {
             player.getPlayer().teleport(map.getSPAWN_ONE());
             setState(GameState.WAITING_FOR_OPPONENT);
@@ -92,9 +97,8 @@ public class Arena {
         }
     }
 
-    public void removePlayer(GamePlayer player) {
-        players.remove(player);
-        player.setArena(null);
+    public void removePlayer(Player player) {
+        players.remove(player.getUniqueId());
         player.getPlayer().teleport(ConfigManager.getLobbySpawn());
 
         player.getPlayer().getInventory().clear();
@@ -109,9 +113,9 @@ public class Arena {
 
     }
 
-    public void addSpectator(GamePlayer player){
+    public void addSpectator(Player player){
         if(!spectators.contains(player)){
-            spectators.add(player);
+            spectators.add(player.getUniqueId());
             player.getPlayer().teleport(map.getSpecSpawn());
         }
     }
@@ -128,7 +132,7 @@ public class Arena {
         return id;
     }
 
-    public List<GamePlayer> getPlayers() {
+    public List<UUID> getPlayers() {
         return players;
     }
 
@@ -166,11 +170,11 @@ public class Arena {
         }
     }
 
-    public GamePlayer getOpponent(GamePlayer player){
-        if(players.indexOf(player) == 0){
-            return players.get(1);
-        }else if(players.indexOf(player) == 1){
-            return players.get(0);
+    public Player getOpponent(Player player){
+        if(players.indexOf(player.getUniqueId()) == 0){
+            return Bukkit.getPlayer(players.get(1));
+        }else if(players.indexOf(player.getUniqueId()) == 1){
+            return Bukkit.getPlayer(players.get(0));
         }
         return null;
     }
@@ -179,7 +183,7 @@ public class Arena {
         return this.preGameCountdownTask;
     }
 
-    public List<GamePlayer> getSpectators() {
+    public List<UUID> getSpectators() {
         return spectators;
     }
 
@@ -187,19 +191,19 @@ public class Arena {
         return arenaGameMode;
     }
 
-    public GamePlayer getWinner() {
+    public Player getWinner() {
         return winner;
     }
 
-    public void setWinner(GamePlayer winner) {
+    public void setWinner(Player winner) {
         this.winner = winner;
     }
 
-    public GamePlayer getLoser() {
+    public Player getLoser() {
         return loser;
     }
 
-    public void setLoser(GamePlayer loser) {
+    public void setLoser(Player loser) {
         this.loser = loser;
     }
 
