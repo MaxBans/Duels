@@ -24,7 +24,7 @@ public class Game {
     }
 
     public void start(){
-        arena.getCountdown().begin();
+        arena.getPreGameCountdownTask().begin();
         arena.sendMessage("§8[§3Duels§8]§7 Game is starting!");
     }
 

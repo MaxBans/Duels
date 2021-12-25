@@ -19,24 +19,7 @@ public class DuelsCommand implements CommandExecutor {
         Player player = (Player) sender;
         GamePlayer gamePlayer = new GamePlayer(player);
 
-        if (gamePlayer.isPlaying()) {
-            player.sendMessage("§cYou can't send duels while in-game!");
-            return true;
-        }
-
-        if (args.length == 0) {
-            player.sendMessage("§cMissing player!");
-            return true;
-        }
-
-        if (args.length == 1) {
-            if (!args[0].equalsIgnoreCase("accept")) {
-                player.sendMessage("§cMissing duel mode!");
-                return true;
-            } else {
-
-            }
-        }
-        return false;
+        Game.autoJoin(gamePlayer);
+        return true;
     }
 }

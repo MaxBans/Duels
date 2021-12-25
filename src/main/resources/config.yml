@@ -3,3 +3,11 @@ lobby:
   x: 50
   y: 60
   z: 70
+
+BuildUHC:
+  Scoreboard:
+    - "&3&lBuildUC &f | %time%"
+    - "&7ID: %id%"
+    - "&7&lMap:&r&b %map%"
+    - " "
+    - "&fOpponent:&b %opponent%"

@@ -28,12 +28,15 @@ public class PreGameCountdownTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (timeLeft == 0) {
+        timeLeft--;
+        if (timeLeft <= 0) {
             cancel();
             arena.start();
-        }else {
+            return;
+        }
             Bukkit.getLogger().severe("DEBUG: Game starting in arena: " + String.valueOf(arena.getID()));
             for (GamePlayer pl : arena.getPlayers()) {
+                System.out.println(pl.getPlayer().getName());
                 Player player = pl.getPlayer();
                 if (timeLeft == 5 || timeLeft == 4) {
                     return;
@@ -45,9 +48,8 @@ public class PreGameCountdownTask extends BukkitRunnable {
                     TitleAPI.sendTitle(player, 10, 15, 10, ChatColor.RED + "" + timeLeft + "", "§fGame starting in");
                 }
                 player.playSound(player.getLocation(), Sound.LEVEL_UP, 20, 20);
-            }
-        }
 
+        }
     }
 
 }

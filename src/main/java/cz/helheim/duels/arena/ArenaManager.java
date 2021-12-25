@@ -17,6 +17,7 @@ public class ArenaManager {
 
     public ArenaManager() {
         activeArenas = new ArrayList<>();
+        playableArenas = new ArrayList<>();
     }
 
     public static void createRandomBuildUHCArena(){
@@ -25,6 +26,7 @@ public class ArenaManager {
         Bukkit.getLogger().severe(String.valueOf(id));
         Arena arena = new Arena(id, ArenaGameMode.BUILD_UHC);
         activeArenas.add(arena);
+        playableArenas.add(arena);
     }
 
     public List<Arena> getActiveArenas() { return activeArenas; }
@@ -40,6 +42,9 @@ public class ArenaManager {
     }
 
     public List<Arena> getPlayableArenas(){
+        if(activeArenas.isEmpty()){
+            createRandomBuildUHCArena();
+        }
         for(Arena arena : activeArenas){
             if(arena.isAvailable()){
                 playableArenas.add(arena);

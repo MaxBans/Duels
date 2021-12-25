@@ -50,7 +50,7 @@ public final class Duels extends JavaPlugin {
     }
 
     public void register(){
-        getCommand("duels").setExecutor(new DuelsCommand());
+        getCommand("autojoin").setExecutor(new DuelsCommand());
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(), this);
     }
