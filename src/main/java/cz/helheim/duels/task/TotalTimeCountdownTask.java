@@ -1,16 +1,7 @@
 package cz.helheim.duels.task;
 
-import com.connorlinfoot.titleapi.TitleAPI;
 import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
-import cz.helheim.duels.manager.ScoreboardManager;
-import cz.helheim.duels.player.GamePlayer;
-import cz.helheim.duels.state.GameState;
-import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TotalTimeCountdownTask extends BukkitRunnable {

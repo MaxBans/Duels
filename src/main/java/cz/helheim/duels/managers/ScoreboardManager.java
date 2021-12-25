@@ -1,4 +1,4 @@
-package cz.helheim.duels.manager;
+package cz.helheim.duels.managers;
 
 import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;

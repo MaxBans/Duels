@@ -1,8 +1,7 @@
 package cz.helheim.duels.arena;
 
-import cz.helheim.duels.Duels;
 import cz.helheim.duels.game.Game;
-import cz.helheim.duels.manager.ScoreboardManager;
+import cz.helheim.duels.managers.ScoreboardManager;
 import cz.helheim.duels.managers.ConfigManager;
 import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
@@ -12,14 +11,8 @@ import cz.helheim.duels.state.GameState;
 import cz.helheim.duels.task.PreGameCountdownTask;
 import cz.helheim.duels.task.TotalTimeCountdownTask;
 import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 
-import java.time.chrono.HijrahChronology;
 import java.util.*;
 
 public class Arena {
