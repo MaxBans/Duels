@@ -2,6 +2,7 @@ package cz.helheim.duels;
 
 import cz.helheim.duels.Listeners.GameListener;
 import cz.helheim.duels.Listeners.JoinListener;
+import cz.helheim.duels.Listeners.PlayerDeathListener;
 import cz.helheim.duels.commands.DuelCommand;
 import cz.helheim.duels.commands.DuelsCommand;
 import cz.helheim.duels.items.KitItemManager;
@@ -35,9 +36,9 @@ public final class Duels extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Bukkit.getLogger().severe("=-=-=-=-=--=-=-=-=");
+        Bukkit.getLogger().severe("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         Bukkit.getLogger().severe("Duels | Developed by: Maxbans9");
-        Bukkit.getLogger().severe("=-=-=-=-=--=-=-=-=");
+        Bukkit.getLogger().severe("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         getConfig();
         saveDefaultConfig();
         setupFiles();
@@ -59,6 +60,7 @@ public final class Duels extends JavaPlugin {
         getCommand("duel").setExecutor(new DuelCommand());
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
     }
 
     public void setupFiles(){

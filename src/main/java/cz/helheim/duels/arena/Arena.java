@@ -7,7 +7,6 @@ import cz.helheim.duels.items.KitItemManager;
 import cz.helheim.duels.managers.ConfigManager;
 import cz.helheim.duels.managers.ScoreboardManager;
 import cz.helheim.duels.maps.LocalGameMap;
-import cz.helheim.duels.maps.MapManager;
 import cz.helheim.duels.modes.ArenaGameMode;
 import cz.helheim.duels.state.GameState;
 import cz.helheim.duels.task.EndingCountdownTask;
@@ -17,7 +16,10 @@ import cz.helheim.duels.utils.MessageUtil;
 import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +29,11 @@ public class Arena {
 
     private final int id;
     private final List<UUID> players;
+    private final List<UUID> alivePlayers;
     private final List<UUID> spectators;
     private final ArenaGameMode arenaGameMode;
-    private GameState state;
     private final LocalGameMap map;
+    private GameState state;
     private Game game;
     private PreGameCountdownTask preGameCountdownTask;
     private TotalTimeCountdownTask totalTimeCountdownTask;
@@ -40,12 +43,13 @@ public class Arena {
     private boolean isAvailable;
     private JPerPlayerScoreboard scoreboard;
 
-    public Arena(int id, ArenaGameMode arenaGameMode) {
-        this.map = MapManager.getRandomBuildUHCMap();
+    public Arena(int id, ArenaGameMode arenaGameMode, LocalGameMap map) {
+        this.map = map;
         this.id = id;
         this.game = new Game(this);
         players = new ArrayList<>();
         spectators = new ArrayList<>();
+        alivePlayers = new ArrayList<>();
         this.winner = null;
         this.loser = null;
         state = GameState.IDLE;
@@ -63,6 +67,8 @@ public class Arena {
         this.scoreboard = ScoreboardManager.getBUHCScoreboard(this);
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
+            alivePlayers.add(player.getUniqueId());
+            game.sendBeginningMessage(player);
             for (UUID uid : players) {
                 player.showPlayer(Bukkit.getPlayer(uid));
             }
@@ -84,16 +90,20 @@ public class Arena {
         state = GameState.IDLE;
         players.clear();
         spectators.clear();
+        preGameCountdownTask.cancel();
+        totalTimeCountdownTask.cancel();
+        endingCountdownTask.cancel();
         preGameCountdownTask = new PreGameCountdownTask(this);
         totalTimeCountdownTask = new TotalTimeCountdownTask(this);
         endingCountdownTask = new EndingCountdownTask(this);
+        alivePlayers.clear();
         game = new Game(this);
         this.isAvailable = true;
-        if(scoreboard != null) {
+        if (scoreboard != null) {
             scoreboard.destroy();
         }
-        Game.getArenaManager().getPlayableArenas().remove(this);
-        Game.getArenaManager().getActiveArenas().remove(this);
+        Game.getArenaManager().getPlayableArenas(getArenaGameMode()).remove(this);
+        Game.getArenaManager().getActiveArenas(getArenaGameMode()).remove(this);
 
     }
 
@@ -109,7 +119,13 @@ public class Arena {
     }
 
     public void addPlayer(Player player) {
+        if (players.contains(player.getUniqueId())) {
+            player.sendMessage(ChatColor.RED + "You are already in the game");
+            return;
+        }
+        player.setLevel(0);
         players.add(player.getUniqueId());
+        alivePlayers.add(player.getUniqueId());
         sendMessage(MessageUtil.getPrefix() + " §3" + player.getPlayer().getName() + " §7joined the game! §3(" + players.size() + ")");
         player.getInventory().clear();
         KitItemManager.addKitItems(player.getInventory());
@@ -128,10 +144,13 @@ public class Arena {
     }
 
     public void removePlayer(Player player) {
+        if (!players.contains(player.getUniqueId())) {
+            player.sendMessage(ChatColor.RED + "You are not in the game");
+            return;
+        }
         players.remove(player.getUniqueId());
-        player.getPlayer().teleport(ConfigManager.getLobbySpawn());
-
-        player.getPlayer().getInventory().clear();
+        player.getInventory().clear();
+        Game.teleportToLobby(player);
 
         if (players.size() == 0) {
             reset();
@@ -143,12 +162,47 @@ public class Arena {
 
     }
 
-    public void addSpectator(Player player) {
-        if (!spectators.contains(player)) {
-            spectators.add(player.getUniqueId());
-            player.getPlayer().teleport(map.getSpecSpawn());
+    public void killPlayer(Player player, Player killer, ArenaGameMode mode) {
+        if (mode.equals(ArenaGameMode.BUILD_UHC)) {
+            if(killer == null){
+                alivePlayers.remove(player.getUniqueId());
+                player.getInventory().clear();
+                addSpectator(player);
+                TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.RED + ChatColor.BOLD.toString() + "YOU DIED!");
+                sendMessage("§3" + player.getName() + "§7 died");
+                setState(GameState.WINNER_ANNOUNCE);
+                return;
+            }
+            alivePlayers.remove(player.getUniqueId());
+            player.getInventory().clear();
+            addSpectator(player);
+            TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.RED + ChatColor.BOLD.toString() + "YOU DIED!");
+            sendMessage("§3" + player.getName() + "§7 was killed by §3" + killer.getName());
+            setState(GameState.WINNER_ANNOUNCE);
+            game.addKill(killer);
         }
     }
+
+    public void addSpectator(Player player) {
+        if (!spectators.contains(player.getUniqueId())) {
+            spectators.add(player.getUniqueId());
+            player.getPlayer().teleport(map.getSpecSpawn());
+            for (UUID uuid : players) {
+                Player p = Bukkit.getPlayer(uuid);
+                p.hidePlayer(player);
+            }
+
+        }
+    }
+
+    public boolean isDead(Player player) {
+        return !alivePlayers.contains(player.getUniqueId());
+    }
+
+    public boolean isSpectator(Player player) {
+        return spectators.contains(player.getUniqueId());
+    }
+
 
     public boolean isAvailable() {
         return isAvailable;
@@ -189,11 +243,24 @@ public class Arena {
             case WINNER_ANNOUNCE:
                 setAvailable(false);
                 endingCountdownTask.begin();
-                for (UUID uuid : players) {
+                for (UUID id : players) {
+                    Player player = Bukkit.getPlayer(id);
+                    scoreboard.removePlayer(player);
+                    player.getInventory().clear();
+                    ItemStack next = new ItemStack(Material.PAPER);
+                    ItemMeta nMeta = next.getItemMeta();
+                    nMeta.setDisplayName("§e§lFind new Arena");
+                    List<String> lore = new ArrayList<>();
+                    lore.add(ChatColor.GRAY + "Multi-Click to find new game");
+                    next.setItemMeta(nMeta);
+                    nMeta.setLore(lore);
+                    player.getInventory().setItem(4, next);
+                }
+                for (UUID uuid : alivePlayers) {
                     this.winner = Bukkit.getPlayer(uuid);
-                    winner.sendMessage(MessageUtil.getPrefix() + "§7 You won the game!");
                     TitleAPI.sendTitle(winner, 30, 45, 30, ChatColor.YELLOW + "Victory!");
                 }
+                Bukkit.broadcastMessage(MessageUtil.getPrefix() + " §b" + winner.getName() + " §7won on arena §3" + map.getName() + "§7.");
                 break;
             case END:
                 setAvailable(false);
@@ -225,6 +292,10 @@ public class Arena {
 
     public ArenaGameMode getArenaGameMode() {
         return arenaGameMode;
+    }
+
+    public List<UUID> getAlivePlayers() {
+        return alivePlayers;
     }
 
     public Player getWinner() {

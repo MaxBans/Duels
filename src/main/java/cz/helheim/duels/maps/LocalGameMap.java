@@ -114,6 +114,8 @@ public class LocalGameMap {
     }
 
     public Location getSpecSpawn() {
+        this.specSpawn = MapManager.locationFromString(section.getString("SPECTATOR_SPAWN"), bukkitWorld);
         return specSpawn;
     }
+
 }

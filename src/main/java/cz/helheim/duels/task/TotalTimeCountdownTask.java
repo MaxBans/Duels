@@ -27,9 +27,7 @@ public class TotalTimeCountdownTask extends BukkitRunnable {
     public void run() {
         timeLeft--;
         if (timeLeft == 0) {
-            for(UUID uuid : arena.getPlayers()) {
-                arena.getScoreboard().removePlayer(Bukkit.getPlayer(uuid));
-            }
+            arena.reset();
             cancel();
         }else {
             if(arena.getState().equals(GameState.IN_GAME)) {

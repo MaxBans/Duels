@@ -42,7 +42,7 @@ public class ScoreboardManager {
         placeholders.put("%id%", String.valueOf(arena.getID()));
         placeholders.put("%state%", arena.getState().getFormattedName());
         placeholders.put("%arena_mode%", arena.getArenaGameMode().getFormattedName());
-        placeholders.put("%opponents_hp%", String.valueOf(arena.getOpponent(pl).getPlayer().getHealth()));
+        placeholders.put("%opponent_hp%", (int) arena.getOpponent(pl).getHealth() + "§c§l♥");
         List<String> replaced = replacePlaceholders(list, placeholders);
         return replaced;
     }

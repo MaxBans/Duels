@@ -44,7 +44,7 @@ armorItems:
       PROTECTION_ENVIRONMENTAL: 4
   3:
     material: DIAMOND_BOOTS
-    name: "Diamond BOOTS"
+    name: "Diamond Boots"
     type: BOOTS
     enchantments:
       PROTECTION_ENVIRONMENTAL: 4
