@@ -1,8 +1,28 @@
 package cz.helheim.duels.utils;
 
+import cz.helheim.duels.Duels;
+import cz.helheim.duels.items.KitItemManager;
+import cz.helheim.duels.maps.MapManager;
+import cz.helheim.duels.modes.ArenaGameMode;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.*;
 
 public class FileUtil {
+
+    private static File gameMapsFolder;
+    private static File classicMapsFolder;
+    private static File buildUHCFolder;
+    private static File theBridgeFolder;
+
+    private FileConfiguration mapsYAML;
+    private FileConfiguration kitYAML;
+    private Duels duels;
+
+    public FileUtil(Duels duels){
+        this.duels = duels;
+    }
 
     public static void copy(File source, File destination) throws IOException {
         if (source.isDirectory()) {
@@ -47,4 +67,72 @@ public class FileUtil {
             throw new IOException("Failed to delete " + file);
         }
     }
+
+    public void setupFiles(){
+        duels.getDataFolder().mkdirs();
+        gameMapsFolder = new File(duels.getDataFolder(), "gameMaps");
+        classicMapsFolder = new File(gameMapsFolder, "Classic Duels");
+        buildUHCFolder = new File(gameMapsFolder, "BuildUHC");
+        theBridgeFolder = new File(gameMapsFolder, "The Bridge");
+
+        if(!gameMapsFolder.exists()){
+            gameMapsFolder.mkdirs();
+        }
+
+        if(!classicMapsFolder.exists()){
+            classicMapsFolder.mkdirs();
+        }
+
+        if(!buildUHCFolder.exists()){
+            buildUHCFolder.mkdirs();
+        }
+
+        if(!theBridgeFolder.exists()){
+            theBridgeFolder.mkdirs();
+        }
+
+
+        getMapsYAML();
+        getBuildUHCKitYAML();
+    }
+
+    public static File getGameMapsFolder(ArenaGameMode mode){
+        switch (mode){
+            case BUILD_UHC:
+                return buildUHCFolder;
+            case CLASSIC_DUELS:
+                return classicMapsFolder;
+            case THE_BRIDGE:
+                return theBridgeFolder;
+        }
+        return theBridgeFolder;
+    }
+
+    public FileConfiguration getMapsYAML(){
+        File file = new File(duels.getDataFolder(), "maps.yml");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        mapsYAML = YamlConfiguration.loadConfiguration(file);
+        return mapsYAML;
+    }
+
+    public FileConfiguration getBuildUHCKitYAML(){
+        File file = new File(duels.getDataFolder(), "BuildUHC_kit.yml");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        kitYAML = YamlConfiguration.loadConfiguration(file);
+        return kitYAML;
+    }
+
+
 }

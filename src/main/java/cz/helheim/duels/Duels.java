@@ -8,6 +8,7 @@ import cz.helheim.duels.commands.DuelsCommand;
 import cz.helheim.duels.items.KitItemManager;
 import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
+import cz.helheim.duels.utils.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,12 +20,9 @@ import java.io.IOException;
 public final class Duels extends JavaPlugin {
     private static Duels instance;
 
-    File gameMapsFolder;
     private static MapManager mapManager;
     private static KitItemManager kitItemManager;
-
-    private FileConfiguration mapsYAML;
-    private FileConfiguration kitYAML;
+    private FileUtil fileUtil;
 
     public Duels(){
         instance = this;
@@ -41,9 +39,10 @@ public final class Duels extends JavaPlugin {
         Bukkit.getLogger().severe("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         getConfig();
         saveDefaultConfig();
-        setupFiles();
-        mapManager = new MapManager(getMapsYAML());
-        kitItemManager = new KitItemManager(getBuildUHCKitYAML());
+        fileUtil = new FileUtil(this);
+        fileUtil.setupFiles();
+        mapManager = new MapManager(fileUtil.getMapsYAML());
+        kitItemManager = new KitItemManager(fileUtil.getBuildUHCKitYAML());
         register();
 
     }
@@ -61,46 +60,6 @@ public final class Duels extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
-    }
-
-    public void setupFiles(){
-        getDataFolder().mkdirs();
-        gameMapsFolder = new File(getDataFolder(), "gameMaps");
-        if(!gameMapsFolder.exists()){
-            gameMapsFolder.mkdirs();
-        }
-        getMapsYAML();
-        getBuildUHCKitYAML();
-    }
-
-    public File getGameMapsFolder(){
-        return gameMapsFolder;
-    }
-
-    public FileConfiguration getMapsYAML(){
-        File file = new File(this.getDataFolder(), "maps.yml");
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        mapsYAML = YamlConfiguration.loadConfiguration(file);
-        return mapsYAML;
-    }
-
-    public FileConfiguration getBuildUHCKitYAML(){
-        File file = new File(this.getDataFolder(), "BuildUHC_kit.yml");
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        kitYAML = YamlConfiguration.loadConfiguration(file);
-        return kitYAML;
     }
 
     public MapManager getMapManager(){

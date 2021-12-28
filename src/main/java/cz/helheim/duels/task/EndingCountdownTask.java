@@ -13,6 +13,7 @@ public class EndingCountdownTask extends BukkitRunnable {
 
     private final Arena arena;
     private int timeLeft = 15;
+    public boolean isRunning = false;
 
     public EndingCountdownTask(Arena arena) {
         this.arena = arena;
@@ -24,8 +25,10 @@ public class EndingCountdownTask extends BukkitRunnable {
 
     @Override
     public void run() {
+        isRunning = true;
         timeLeft--;
         if (timeLeft == 0) {
+            isRunning = false;
             cancel();
             arena.reset();
         }

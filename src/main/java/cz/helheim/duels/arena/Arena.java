@@ -90,9 +90,15 @@ public class Arena {
         state = GameState.IDLE;
         players.clear();
         spectators.clear();
-        preGameCountdownTask.cancel();
-        totalTimeCountdownTask.cancel();
-        endingCountdownTask.cancel();
+        if(preGameCountdownTask.isRunning) {
+            preGameCountdownTask.cancel();
+        }
+        if(totalTimeCountdownTask.isRunning) {
+            totalTimeCountdownTask.cancel();
+        }
+        if (endingCountdownTask.isRunning) {
+            endingCountdownTask.cancel();
+        }
         preGameCountdownTask = new PreGameCountdownTask(this);
         totalTimeCountdownTask = new TotalTimeCountdownTask(this);
         endingCountdownTask = new EndingCountdownTask(this);
