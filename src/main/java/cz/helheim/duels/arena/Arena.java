@@ -16,6 +16,7 @@ import cz.helheim.duels.utils.MessageUtil;
 import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -130,6 +131,7 @@ public class Arena {
             return;
         }
         player.setLevel(0);
+        player.setGameMode(GameMode.SURVIVAL);
         players.add(player.getUniqueId());
         alivePlayers.add(player.getUniqueId());
         sendMessage(MessageUtil.getPrefix() + " §3" + player.getPlayer().getName() + " §7joined the game! §3(" + players.size() + ")");
@@ -215,6 +217,9 @@ public class Arena {
     }
 
     public void setAvailable(boolean available) {
+        if(!available){
+            Game.getArenaManager().getActiveArenas(this.getArenaGameMode()).remove(this);
+        }
         this.isAvailable = available;
     }
 
@@ -291,6 +296,7 @@ public class Arena {
     public PreGameCountdownTask getPreGameCountdownTask() {
         return this.preGameCountdownTask;
     }
+
 
     public List<UUID> getSpectators() {
         return spectators;

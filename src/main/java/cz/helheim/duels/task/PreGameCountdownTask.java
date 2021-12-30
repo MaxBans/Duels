@@ -4,6 +4,7 @@ import com.connorlinfoot.titleapi.TitleAPI;
 import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.state.GameState;
+import cz.helheim.duels.utils.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 public class PreGameCountdownTask extends BukkitRunnable {
     private final Arena arena;
-    private int timeLeft = 5;
+    private int timeLeft = 10;
     public boolean isRunning = false;
 
     public PreGameCountdownTask(Arena arena) {
@@ -36,21 +37,21 @@ public class PreGameCountdownTask extends BukkitRunnable {
             arena.start();
             return;
         }
-            Bukkit.getLogger().severe("DEBUG: Game starting in arena: " + String.valueOf(arena.getID()));
+        for (UUID uuid : arena.getPlayers()) {
+            Player player = Bukkit.getPlayer(uuid);
+            player.setLevel(timeLeft);
+        }
             for (UUID uuid : arena.getPlayers()) {
                 Player player = Bukkit.getPlayer(uuid);
-                if (timeLeft == 5 || timeLeft == 4) {
-                    return;
-                } else if (timeLeft == 3) {
+                 if (timeLeft == 3) {
                     TitleAPI.sendTitle(player, 10, 15, 10, ChatColor.GREEN + "" + timeLeft + "", "§fGame starting in");
                 } else if (timeLeft == 2) {
                     TitleAPI.sendTitle(player, 10, 15, 10, ChatColor.YELLOW + "" + timeLeft + "", "§fGame starting in");
                 } else if (timeLeft == 1) {
                     TitleAPI.sendTitle(player, 10, 15, 10, ChatColor.RED + "" + timeLeft + "", "§fGame starting in");
                 }
-                player.playSound(player.getLocation(), Sound.LEVEL_UP, 20, 20);
-
-        }
+               // player.playSound(player.getLocation(), Sound.LEVEL_UP, 20, 20);
+            }
     }
 
 }

@@ -45,7 +45,7 @@ public class MapManager {
         }
 
         for(String key : classicSection.getKeys(false)){
-            ConfigurationSection section = buhcSection.getConfigurationSection(key);
+            ConfigurationSection section = classicSection.getConfigurationSection(key);
             if(section != null) {
                 String name = section.getString("name");
                 String builder = section.getString("builder");
@@ -55,7 +55,7 @@ public class MapManager {
         }
 
         for(String key : theBridgeSection.getKeys(false)){
-            ConfigurationSection section = buhcSection.getConfigurationSection(key);
+            ConfigurationSection section = theBridgeSection.getConfigurationSection(key);
             if(section != null) {
                 String name = section.getString("name");
                 String builder = section.getString("builder");
@@ -100,7 +100,6 @@ public class MapManager {
     public static List<LocalGameMap> getClassicDuelsMaps() {
         return classicDuelsMaps;
     }
-
     public static List<LocalGameMap> getBridgeMaps() {
         return bridgeMaps;
     }

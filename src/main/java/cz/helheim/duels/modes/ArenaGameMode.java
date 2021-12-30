@@ -21,7 +21,7 @@ public enum ArenaGameMode {
             return THE_BRIDGE;
         }
         else if(mode.equalsIgnoreCase("classic_duels") || mode.equalsIgnoreCase("classicduels") || mode.equalsIgnoreCase("cd") || mode.equalsIgnoreCase("classic")){
-            return THE_BRIDGE;
+            return CLASSIC_DUELS;
         }
         else{
             return null;
