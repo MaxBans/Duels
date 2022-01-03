@@ -1,7 +1,7 @@
 package cz.helheim.duels.maps;
 
-import cz.helheim.duels.Duels;
-import cz.helheim.duels.modes.ArenaGameMode;
+import cz.helheim.duels.arena.ArenaMode;
+import cz.helheim.duels.arena.ArenaType;
 import cz.helheim.duels.utils.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -37,9 +37,9 @@ public class MapManager {
             ConfigurationSection section = buhcSection.getConfigurationSection(key);
             if(section != null) {
                 String name = section.getString("name");
-                System.out.println(name);
+                ArenaMode mode = ArenaMode.valueOf(section.getString("mode"));
                 String builder = section.getString("builder");
-                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(ArenaGameMode.BUILD_UHC), false, name, ArenaGameMode.BUILD_UHC, builder, section);
+                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(ArenaType.BUILD_UHC), false, name, ArenaType.BUILD_UHC, mode, builder, section);
                 buildUHCMaps.add(map);
             }
         }
@@ -48,8 +48,9 @@ public class MapManager {
             ConfigurationSection section = classicSection.getConfigurationSection(key);
             if(section != null) {
                 String name = section.getString("name");
+                ArenaMode mode = ArenaMode.valueOf(section.getString("mode"));
                 String builder = section.getString("builder");
-                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(ArenaGameMode.CLASSIC_DUELS), false, name, ArenaGameMode.CLASSIC_DUELS, builder, section);
+                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(ArenaType.CLASSIC_DUELS), false, name, ArenaType.CLASSIC_DUELS, mode, builder, section);
                 getClassicDuelsMaps().add(map);
             }
         }
@@ -58,28 +59,43 @@ public class MapManager {
             ConfigurationSection section = theBridgeSection.getConfigurationSection(key);
             if(section != null) {
                 String name = section.getString("name");
+                ArenaMode mode = ArenaMode.valueOf(section.getString("mode"));
                 String builder = section.getString("builder");
-                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(ArenaGameMode.THE_BRIDGE), false, name, ArenaGameMode.THE_BRIDGE, builder, section);
+                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(ArenaType.THE_BRIDGE), false, name, ArenaType.THE_BRIDGE, mode, builder, section);
                 getBridgeMaps().add(map);
             }
         }
     }
 
-    public static LocalGameMap getRandomMap(ArenaGameMode mode){
+    public static LocalGameMap getRandomMap(ArenaType type, ArenaMode mode){
         Random random = new Random();
         LocalGameMap map;
-        switch (mode){
+        List<LocalGameMap> maps = new ArrayList<>();
+        switch (type){
             case BUILD_UHC:
-                System.out.println("DEBUG: " + getBuildUHCMaps().size());
-                map = getBuildUHCMaps().get(random.nextInt(getBuildUHCMaps().size() + 1));
+                for(LocalGameMap localGameMap : getBuildUHCMaps()){
+                    if(localGameMap.getArenaMode().equals(mode)){
+                        maps.add(localGameMap);
+                    }
+                }
+                System.out.println(maps.size());
+                map = maps.get(random.nextInt(maps.size()));
                 break;
             case CLASSIC_DUELS:
-                System.out.println("DEBUG: " + getClassicDuelsMaps().size());
-                map = getClassicDuelsMaps().get(random.nextInt(getClassicDuelsMaps().size() + 1));
+                for(LocalGameMap localGameMap : getClassicDuelsMaps()){
+                    if(localGameMap.getArenaMode().equals(mode)){
+                        maps.add(localGameMap);
+                    }
+                }
+                map = maps.get(random.nextInt(maps.size() + 1));
                 break;
             case THE_BRIDGE:
-                System.out.println("DEBUG: " + getBridgeMaps().size());
-                map = getBridgeMaps().get(random.nextInt(getBridgeMaps().size() + 1));
+                for(LocalGameMap localGameMap : getBridgeMaps()){
+                    if(localGameMap.getArenaMode().equals(mode)){
+                        maps.add(localGameMap);
+                    }
+                }
+                map = maps.get(random.nextInt(maps.size() + 1));
                 break;
             default:
                 map = getClassicDuelsMaps().get(0);

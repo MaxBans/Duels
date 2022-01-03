@@ -1,6 +1,8 @@
 package cz.helheim.duels.maps;
 
-import cz.helheim.duels.modes.ArenaGameMode;
+import cz.helheim.duels.arena.ArenaMode;
+import cz.helheim.duels.arena.ArenaType;
+import cz.helheim.duels.utils.Cuboid;
 import cz.helheim.duels.utils.FileUtil;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,21 +13,25 @@ import java.io.IOException;
 public class LocalGameMap {
 
     private final String name;
-    private final ArenaGameMode mode;
+    private final ArenaType arenaType;
+    private final ArenaMode arenaMode;
     private final String builder;
-    private Location SPAWN_ONE;
-    private Location SPAWN_TWO;
+    private Cuboid SPAWN_ONE;
+    private Cuboid SPAWN_TWO;
     private Location specSpawn;
+    private Cuboid PORTAL_ONE;
+    private Cuboid PORTAL_TWO;
     private final ConfigurationSection section;
     private final File sourceWorldFolder;
     private File activeWorldFolder;
 
     private World bukkitWorld;
 
-    public LocalGameMap(File worldFolder, boolean loadOnInit, String name, ArenaGameMode mode, String builder, ConfigurationSection section){
+    public LocalGameMap(File worldFolder, boolean loadOnInit, String name, ArenaType type, ArenaMode mode, String builder, ConfigurationSection section){
         this.name = name;
         this.builder = builder;
-        this.mode = mode;
+        this.arenaType = type;
+        this.arenaMode = mode;
         this.sourceWorldFolder = new File(
                 worldFolder,
                 name
@@ -97,20 +103,36 @@ public class LocalGameMap {
         return bukkitWorld;
     }
 
-    public Location getSPAWN_ONE() {
+    public Cuboid getSPAWN_ONE() {
         if(!isLoaded()) load();
-        this.SPAWN_ONE = MapManager.locationFromString(section.getString("SPAWN_ONE"), bukkitWorld);
+        this.SPAWN_ONE = new Cuboid(MapManager.locationFromString(section.getStringList("SPAWN_ONE").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("SPAWN_ONE").get(1), getBukkitWorld()));
         return SPAWN_ONE;
     }
 
-    public Location getSPAWN_TWO() {
+    public Cuboid getSPAWN_TWO() {
         if(!isLoaded()) load();
-        this.SPAWN_TWO = MapManager.locationFromString(section.getString("SPAWN_TWO"), bukkitWorld);
+        this.SPAWN_TWO = new Cuboid(MapManager.locationFromString(section.getStringList("SPAWN_TWO").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("SPAWN_TWO").get(1), getBukkitWorld()));
         return SPAWN_TWO;
     }
 
-    public ArenaGameMode getMode() {
-        return mode;
+    public Cuboid getPORTAL_ONE(){
+        if(!getArenaType().equals(ArenaType.THE_BRIDGE)) return new Cuboid(new Location(bukkitWorld, 0,0,0), new Location(bukkitWorld, 2,2,2));
+
+        if(!isLoaded()) load();
+        this.PORTAL_ONE = new Cuboid(MapManager.locationFromString(section.getStringList("PORTAL_ONE").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("PORTAL_ONE").get(1), getBukkitWorld()));
+        return PORTAL_ONE;
+    }
+
+    public Cuboid getPORTAL_TWO(){
+        if(!getArenaType().equals(ArenaType.THE_BRIDGE)) return new Cuboid(new Location(bukkitWorld, 0,0,0), new Location(bukkitWorld, 2,2,2));
+
+        if(!isLoaded()) load();
+        this.PORTAL_TWO = new Cuboid(MapManager.locationFromString(section.getStringList("PORTAL_TWO").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("PORTAL_TWO").get(1), getBukkitWorld()));
+        return PORTAL_TWO;
+    }
+
+    public ArenaType getArenaType() {
+        return arenaType;
     }
 
     public Location getSpecSpawn() {
@@ -118,4 +140,7 @@ public class LocalGameMap {
         return specSpawn;
     }
 
+    public ArenaMode getArenaMode() {
+        return arenaMode;
+    }
 }

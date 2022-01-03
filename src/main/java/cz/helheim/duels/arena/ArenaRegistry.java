@@ -1,37 +1,35 @@
 package cz.helheim.duels.arena;
 
 import cz.helheim.duels.maps.MapManager;
-import cz.helheim.duels.modes.ArenaGameMode;
 import cz.helheim.duels.state.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class ArenaManager {
+public class ArenaRegistry {
 
     private static ArrayList<Arena> activeArenas;
     private static ArrayList<Arena> playableArenas;
 
-    public ArenaManager() {
+    public ArenaRegistry() {
         activeArenas = new ArrayList<>();
         playableArenas = new ArrayList<>();
     }
 
-    public static Arena createRandomArena(ArenaGameMode mode) {
+    public static Arena createRandomArena(ArenaType type, ArenaMode mode) {
         int id = (int) ((Math.random() * (9999 - 1000)) + 1000);
         Bukkit.getLogger().severe(String.valueOf(id));
-        Arena arena = new Arena(id, mode, MapManager.getRandomMap(mode));
+        Arena arena = new Arena(id, type, MapManager.getRandomMap(type, mode), mode);
         activeArenas.add(arena);
         playableArenas.add(arena);
         return arena;
     }
 
-    public static boolean isPlaying(Player player) {
+    public static boolean isInArena(Player player) {
         for (Arena arena : activeArenas) {
-            if (arena.getPlayers().contains(player.getUniqueId())) {
+            if (arena.getPlayers().contains(player)) {
                 return true;
             }
         }
@@ -41,7 +39,7 @@ public class ArenaManager {
 
     public static Arena getArena(Player player) {
         for (Arena arena : activeArenas) {
-            if (arena.getPlayers().contains(player.getUniqueId())) {
+            if (arena.getPlayers().contains(player)) {
                 return arena;
             }
         }
@@ -66,19 +64,19 @@ public class ArenaManager {
         return getArena(id).getState() == GameState.IDLE;
     }
 
-    public List<Arena> getActiveArenas(ArenaGameMode mode) {
+    public List<Arena> getActiveArenas(ArenaType type, ArenaMode mode) {
         List<Arena> list = new ArrayList<>();
         for (Arena arena : activeArenas) {
-            if (arena.getArenaGameMode().equals(mode)) {
+            if (arena.getArenaType().equals(type) && arena.getArenaMode().equals(mode)) {
                 list.add(arena);
             }
         }
         return list;
     }
 
-    public List<Arena> getPlayableArenas(ArenaGameMode mode) {
+    public List<Arena> getPlayableArenas(ArenaType type, ArenaMode mode) {
         if (activeArenas.isEmpty()) {
-                createRandomArena(mode);
+                createRandomArena(type, mode);
             }
 
         for (Arena arena : activeArenas) {
@@ -86,9 +84,10 @@ public class ArenaManager {
                 playableArenas.add(arena);
             }
         }
+
         List<Arena> modeArenas = new ArrayList<>();
         for (Arena arena : playableArenas) {
-            if (arena.getArenaGameMode().equals(mode)) {
+            if (arena.getArenaType().equals(type) && arena.getArenaMode().equals(mode)) {
                 modeArenas.add(arena);
             }
         }

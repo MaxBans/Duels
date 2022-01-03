@@ -1,15 +1,11 @@
 package cz.helheim.duels.Listeners;
 
-import com.connorlinfoot.titleapi.TitleAPI;
 import cz.helheim.duels.arena.Arena;
-import cz.helheim.duels.arena.ArenaManager;
+import cz.helheim.duels.arena.ArenaRegistry;
+import cz.helheim.duels.arena.ArenaType;
 import cz.helheim.duels.managers.ConfigManager;
-import cz.helheim.duels.modes.ArenaGameMode;
 import cz.helheim.duels.state.GameState;
-import cz.helheim.duels.utils.KillMessages;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,8 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.*;
@@ -34,7 +28,7 @@ public class PlayerDeathListener implements Listener {
     public void onDamage(EntityDamageByEntityEvent evt) {
         if (evt.getEntity() instanceof Player) {
             Player p = (Player) evt.getEntity();
-            if (ArenaManager.isPlaying(p)) {
+            if (ArenaRegistry.isInArena(p)) {
                 UUID uuid = p.getUniqueId();
                 Entity damager = evt.getDamager();
                 if (damager instanceof HumanEntity) {
@@ -73,6 +67,7 @@ public class PlayerDeathListener implements Listener {
     public void onDamage(EntityDamageEvent evt) {
         if (evt.getEntity() instanceof Player) {
             UUID uuid = evt.getEntity().getUniqueId();
+            //if(!ArenaRegistry.getArena(((Player) evt.getEntity()).getPlayer()).getArenaType().equals(ArenaType.THE_BRIDGE))
             if (evt.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 causedVoid.add(uuid);
             } else {
@@ -85,20 +80,22 @@ public class PlayerDeathListener implements Listener {
     public void findDeath(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
-            if(ArenaManager.isPlaying(p)) {
-                Arena arena = ArenaManager.getArena(p);
+            if(ArenaRegistry.isInArena(p)) {
+                Arena arena = ArenaRegistry.getArena(p);
                 if (arena.getState().equals(GameState.IN_GAME)) {
                     if (e.getFinalDamage() >= p.getHealth()) {
                         if (arena.isSpectator(p) || arena.isDead(p)) {
                             return;
                         }
+                        if(!arena.getArenaType().equals(ArenaType.THE_BRIDGE)) arena.getScoreboard().updateScoreboard();
+
                         if ((e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) || (e.getCause() == EntityDamageEvent.DamageCause.FIRE)) {
                             if (lastHitUuid.containsKey(p.getUniqueId())) {
                                 UUID killedID = lastHitUuid.get(p.getUniqueId());
                                 Player killer = Bukkit.getPlayer(killedID);
-                                arena.killPlayer(p, killer, arena.getArenaGameMode());
+                                arena.killPlayer(p, killer, arena.getArenaType());
                             } else {
-                                arena.killPlayer(p, null , arena.getArenaGameMode());
+                                arena.killPlayer(p, null , arena.getArenaType());
                                 e.setCancelled(true);
                                 p.setHealth(20D);
                                 p.setFoodLevel(20);
@@ -107,7 +104,7 @@ public class PlayerDeathListener implements Listener {
                             e.setCancelled(true);
                             p.setHealth(20D);
                             p.setFoodLevel(20);
-                            arena.killPlayer(p, null, arena.getArenaGameMode());
+                            arena.killPlayer(p, null, arena.getArenaType());
 
                         } else if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
 
@@ -115,10 +112,10 @@ public class PlayerDeathListener implements Listener {
                                 UUID killedID = lastHitUuid.get(p.getUniqueId());
                                 Player killer = Bukkit.getPlayer(killedID);
                                 e.setCancelled(true);
-                                arena.killPlayer(p, killer, arena.getArenaGameMode());
+                                arena.killPlayer(p, killer, arena.getArenaType());
 
                             } else {
-                                arena.killPlayer(p, null, arena.getArenaGameMode());
+                                arena.killPlayer(p, null, arena.getArenaType());
                                 e.setCancelled(true);
                                 p.setHealth(20D);
                                 p.setFoodLevel(20);
@@ -128,10 +125,10 @@ public class PlayerDeathListener implements Listener {
                             e.setCancelled(true);
                             if (event.getDamager() instanceof Player) {
                                 Player killer = (Player) event.getDamager();
-                                arena.killPlayer(p, killer, arena.getArenaGameMode());
+                                arena.killPlayer(p, killer, arena.getArenaType());
 
                             } else {
-                                arena.killPlayer(p, null,arena.getArenaGameMode());
+                                arena.killPlayer(p, null,arena.getArenaType());
 
                             }
                             p.setHealth(20D);
@@ -142,7 +139,7 @@ public class PlayerDeathListener implements Listener {
                             if (((projectile.getShooter() instanceof Player)) && ((event.getEntity() instanceof Player))) {
                                 Player player = ((Player) event.getEntity()).getPlayer();
                                 Player killer = ((Player) projectile.getShooter()).getPlayer();
-                                arena.killPlayer(player, killer, arena.getArenaGameMode());
+                                arena.killPlayer(player, killer, arena.getArenaType());
 
                                 e.setCancelled(true);
                                 event.setCancelled(true);
@@ -150,7 +147,7 @@ public class PlayerDeathListener implements Listener {
                         } else {
                             System.out.println("statement not added yet.");
                             e.setCancelled(true);
-                            arena.killPlayer(p, null, arena.getArenaGameMode());
+                            arena.killPlayer(p, null, arena.getArenaType());
                             p.setHealth(20D);
                             p.setFoodLevel(20);
                         }
@@ -164,10 +161,30 @@ public class PlayerDeathListener implements Listener {
     public void checkDead(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
-            if (ArenaManager.isPlaying(player)) {
-                Arena arena = ArenaManager.getArena(player);
+            if (ArenaRegistry.isInArena(player)) {
+                Arena arena = ArenaRegistry.getArena(player);
                 if (arena.isSpectator(player)) {
                     e.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void checkTeammate(EntityDamageByEntityEvent e){
+        if(e.getEntity() instanceof  Player){
+            Player player = (Player) e.getEntity();
+            if(e.getDamager() instanceof Player){
+                Player damager = (Player) e.getDamager();
+                if(ArenaRegistry.isInArena(player) && ArenaRegistry.isInArena(damager)){
+                    if(ArenaRegistry.getArena(player).equals(ArenaRegistry.getArena(damager))){
+                        Arena arena = ArenaRegistry.getArena(player);
+                        if(arena.getTeamManager().getTeam(player).equals(arena.getTeamManager().getTeam(damager))){
+                            e.setCancelled(true);
+                        }else{
+                            e.setCancelled(false);
+                        }
+                    }
                 }
             }
         }

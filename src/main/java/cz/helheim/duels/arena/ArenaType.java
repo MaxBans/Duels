@@ -1,12 +1,12 @@
-package cz.helheim.duels.modes;
+package cz.helheim.duels.arena;
 
-public enum ArenaGameMode {
+public enum ArenaType {
     BUILD_UHC("Build UHC"),
     THE_BRIDGE("The Bridge"),
     CLASSIC_DUELS("Classic Duels");
 
     private final String name;
-    ArenaGameMode(String name){
+    ArenaType(String name){
         this.name = name;
     }
 
@@ -14,7 +14,7 @@ public enum ArenaGameMode {
         return name;
     }
 
-    public static ArenaGameMode getByName(String mode){
+    public static ArenaType getByName(String mode){
         if(mode.equalsIgnoreCase("builduhc") || mode.equalsIgnoreCase("build_uhc") || mode.equalsIgnoreCase("uhc") || mode.equalsIgnoreCase("buhc")){
             return BUILD_UHC;
         }else if(mode.equalsIgnoreCase("thebridge") || mode.equalsIgnoreCase("bridge") || mode.equalsIgnoreCase("the_bridge") || mode.equalsIgnoreCase("tb")){

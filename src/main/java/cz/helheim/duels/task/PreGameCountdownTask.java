@@ -37,12 +37,12 @@ public class PreGameCountdownTask extends BukkitRunnable {
             arena.start();
             return;
         }
-        for (UUID uuid : arena.getPlayers()) {
-            Player player = Bukkit.getPlayer(uuid);
+        for (Player player : arena.getPlayers()) {
+            //Player player = Bukkit.getPlayer(uuid);
             player.setLevel(timeLeft);
         }
-            for (UUID uuid : arena.getPlayers()) {
-                Player player = Bukkit.getPlayer(uuid);
+            for (Player player : arena.getPlayers()) {
+                //layer player = Bukkit.getPlayer(uuid);
                  if (timeLeft == 3) {
                     TitleAPI.sendTitle(player, 10, 15, 10, ChatColor.GREEN + "" + timeLeft + "", "§fGame starting in");
                 } else if (timeLeft == 2) {

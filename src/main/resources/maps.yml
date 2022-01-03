@@ -4,15 +4,32 @@ BuildUHC:
     0:
       name: Fractal
       builder: "Nejaky Ape"
-      SPAWN_ONE: "1,65,-38"
-      SPAWN_TWO: "-1,66,-6"
-      SPECTATOR_SPAWN: 0,81,3
+      SPAWN_ONE:
+        - "1,65,-38"
+        - "3,65,-39"
+      SPAWN_TWO:
+        - "-1,66, -6"
+        - "-3, 66, -8"
+      PORTAL_ONE:
+        - "-45,55,64"
+        - "-48,53,65"
+      SPECTATOR_SPAWN: "0,81,3"
     1:
       name: Arena
       builder: "idk jakoby"
-      SPAWN_ONE: "1,65,-38"
-      SPAWN_TWO: "-1,66,-6"
-      SPECTATOR_SPAWN: 0,81,3
+      SPAWN_ONE:
+        - "1,65,-38"
+        - "3,65,-39"
+      SPAWN_TWO:
+        - "-1,66, -6"
+        - "-3, 66, -8"
+      PORTAL_ONE:
+        - "-45,55,64"
+        - "-48,53,65"
+      PORTAL_TWO:
+        - "-49,55,64"
+        - "-45,53,65"
+      SPECTATOR_SPAWN: "0,81,3"
 ClassicDuels:
   maps:
     0:

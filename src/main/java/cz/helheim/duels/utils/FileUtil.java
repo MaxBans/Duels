@@ -1,9 +1,7 @@
 package cz.helheim.duels.utils;
 
 import cz.helheim.duels.Duels;
-import cz.helheim.duels.items.KitItemManager;
-import cz.helheim.duels.maps.MapManager;
-import cz.helheim.duels.modes.ArenaGameMode;
+import cz.helheim.duels.arena.ArenaType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -96,7 +94,7 @@ public class FileUtil {
         getBuildUHCKitYAML();
     }
 
-    public static File getGameMapsFolder(ArenaGameMode mode){
+    public static File getGameMapsFolder(ArenaType mode){
         switch (mode){
             case BUILD_UHC:
                 return buildUHCFolder;

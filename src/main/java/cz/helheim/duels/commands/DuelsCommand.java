@@ -1,7 +1,8 @@
 package cz.helheim.duels.commands;
 
+import cz.helheim.duels.arena.ArenaMode;
 import cz.helheim.duels.game.Game;
-import cz.helheim.duels.modes.ArenaGameMode;
+import cz.helheim.duels.arena.ArenaType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,7 +18,7 @@ public class DuelsCommand implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
-        Game.autoJoin(player, ArenaGameMode.getByName(args[0]));
+        Game.autoJoin(player, ArenaType.getByName(args[0]), ArenaMode.getByName(args[1]));
         return true;
     }
 }

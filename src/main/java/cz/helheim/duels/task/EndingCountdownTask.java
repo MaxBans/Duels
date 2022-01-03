@@ -32,8 +32,7 @@ public class EndingCountdownTask extends BukkitRunnable {
             cancel();
             arena.reset();
         }
-        for(UUID uuid : arena.getPlayers()){
-            Player player = Bukkit.getPlayer(uuid);
+        for(Player player : arena.getPlayers()){
             player.setLevel(timeLeft);
         }
     }
