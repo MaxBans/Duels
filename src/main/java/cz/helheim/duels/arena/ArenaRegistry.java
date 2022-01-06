@@ -10,13 +10,9 @@ import java.util.List;
 
 public class ArenaRegistry {
 
-    private static ArrayList<Arena> activeArenas;
-    private static ArrayList<Arena> playableArenas;
+    private static final ArrayList<Arena> activeArenas = new ArrayList<>();
+    private static final ArrayList<Arena> playableArenas = new ArrayList<>();
 
-    public ArenaRegistry() {
-        activeArenas = new ArrayList<>();
-        playableArenas = new ArrayList<>();
-    }
 
     public static Arena createRandomArena(ArenaType type, ArenaMode mode) {
         int id = (int) ((Math.random() * (9999 - 1000)) + 1000);
@@ -64,7 +60,7 @@ public class ArenaRegistry {
         return getArena(id).getState() == GameState.IDLE;
     }
 
-    public List<Arena> getActiveArenas(ArenaType type, ArenaMode mode) {
+    public static List<Arena> getActiveArenas(ArenaType type, ArenaMode mode) {
         List<Arena> list = new ArrayList<>();
         for (Arena arena : activeArenas) {
             if (arena.getArenaType().equals(type) && arena.getArenaMode().equals(mode)) {
@@ -74,7 +70,7 @@ public class ArenaRegistry {
         return list;
     }
 
-    public List<Arena> getPlayableArenas(ArenaType type, ArenaMode mode) {
+    public static List<Arena> getPlayableArenas(ArenaType type, ArenaMode mode) {
         if (activeArenas.isEmpty()) {
                 createRandomArena(type, mode);
             }

@@ -1,17 +1,108 @@
+prefix: "&8[&3Duels&8]"
 lobby:
   world: "world"
   x: 50
   y: 79
   z: 68
 
-BuildUHC:
-  ScoreboardTitle: "&3&lBuildUHC &f | %time%"
+Build UHC:
+  1vs1:
+    ScoreboardTitle: "&3&lDuels&f | %time%"
+
+    Scoreboard:
+      - "&7ID:&f %id%"
+      - "&7&lMap:&r&b %map%"
+      - " "
+      - "&f&lOpponent:"
+      - "  %opponent_1%"
+      - " "
+      - "&fMode:&b %arena_mode%"
+      - "&fType: &b %arena_type%"
+      - ""
+      - "&3mc.helheim.cz"
+  2vs2:
+    ScoreboardTitle: "&3&lDuels&f | %time%"
+
+    Scoreboard:
+      - "&7ID:&f %id%"
+      - "&7&lMap:&r&b %map%"
+      - " "
+      - "&f&lOpponents:"
+      - "  %opponent_1%"
+      - "  %opponent_2%"
+      - " "
+      - "&fMode:&b %arena_mode%"
+      - "&fType: &b %arena_type%"
+      - ""
+      - "&7Kills: %kills%"
+      - ""
+      - "&3mc.helheim.cz"
+  3vs3:
+    ScoreboardTitle: "&3&lDuels&f | %time%"
+
+    Scoreboard:
+      - "&7ID:&f %id%"
+      - "&7&lMap:&r&b %map%"
+      - " "
+      - "&f&lOpponents:"
+      - "  %opponent_1%"
+      - "  %opponent_2%"
+      - "  %opponent_3%"
+      - " "
+      - "&fMode:&b %arena_mode%"
+      - "&fType: &b %arena_type%"
+      - ""
+      - "&7Kills: %kills%"
+      - ""
+      - "&3mc.helheim.cz"
+  4vs4:
+    ScoreboardTitle: "&3&lDuels&f | %time%"
+
+    Scoreboard:
+      - "&7ID:&f %id%"
+      - "&7&lMap:&r&b %map%"
+      - " "
+      - "&f&lOpponents:"
+      - "  %opponent_1%"
+      - "  %opponent_2%"
+      - "  %opponent_3%"
+      - "  %opponent_4%"
+      - " "
+      - "&fMode:&b %arena_mode%"
+      - "&fType: &b %arena_type%"
+      - ""
+      - "&7Kills: %kills%"
+      - ""
+      - "&3mc.helheim.cz"
+Classic Duels:
+  ScoreboardTitle: "&3&lDuels&f | %time%"
+
   Scoreboard:
     - "&7ID:&f %id%"
     - "&7&lMap:&r&b %map%"
     - " "
-    - "&fOpponent:&b %opponent%"
+    - "&f&lOpponent:"
+    - "  %opponent%"
+    - "  HP:&b %opponent_hp%"
     - " "
-    - "Test line"
+    - "&fMode:&b %arena_mode%"
+    - "&fType: &b %arena_type%"
+    - ""
+    - "&3mc.helheim.cz"
+The Bridge:
+  ScoreboardTitle: "&3&lDuels&f | %time%"
+
+  Scoreboard:
+    - "&7ID:&f %id%"
+    - "&7&lMap:&r&b %map%"
+    - " "
+    - "&c[R] %red_points%"
+    - "&3[B] %blue_points%"
+    - ""
+    - "&7Kills:&f %kills%"
+    - "&7Goals:&g %goals%"
+    - ""
+    - "&fMode:&b %arena_mode%"
+    - "&fType: &b %arena_type%"
     - ""
     - "&3mc.helheim.cz"

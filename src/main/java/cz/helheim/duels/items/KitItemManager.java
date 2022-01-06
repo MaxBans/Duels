@@ -1,5 +1,6 @@
 package cz.helheim.duels.items;
 
+import cz.helheim.duels.arena.ArenaType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,9 +15,9 @@ public class KitItemManager {
     private static final List<KitItem> kitItems = new ArrayList<>();
     private static final List<ArmorItem> armorItems = new ArrayList<>();
 
-    public KitItemManager(FileConfiguration kitConfig){
-        ConfigurationSection kitSection = kitConfig.getConfigurationSection("kitItems");
-        ConfigurationSection armorSection = kitConfig.getConfigurationSection("armorItems");
+    public KitItemManager(FileConfiguration kitConfig, ArenaType type){
+        ConfigurationSection kitSection = kitConfig.getConfigurationSection(type.getFormattedName());
+        ConfigurationSection armorSection = kitConfig.getConfigurationSection(type.getFormattedName() + ".armorItems");
         if (kitSection == null) {
             Bukkit.getLogger().severe("Please setup 'kitItems' in config.yml");
         }
@@ -34,13 +35,13 @@ public class KitItemManager {
         }
     }
 
-    public static void addKitItems(Inventory inventory){
+    public void addKitItems(Inventory inventory){
         for(KitItem kitItem : kitItems){
             inventory.setItem(kitItem.getSlot(), kitItem.make());
         }
     }
 
-    public static void suit(Player player){
+    public void suit(Player player){
         for(ArmorItem armorItem : armorItems){
             armorItem.suitPlayer(player);
         }

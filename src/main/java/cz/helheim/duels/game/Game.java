@@ -23,9 +23,10 @@ public class Game {
     private final HashMap<UUID, Integer> goals;
 
     private final HashMap<ArenaTeam, Integer> points;
-    public static ArenaRegistry arenaManager = new ArenaRegistry();
+    public static ArenaRegistry arenaManager;
 
     public Game(Arena arena){
+        ArenaRegistry arenaManager = new ArenaRegistry();
         this.arena = arena;
         this.kills = new HashMap<>();
         this.points = new HashMap<>();
@@ -71,7 +72,7 @@ public class Game {
             MessageUtil.sendCenteredMessage(target, "§b§lEliminate your opponent!");
             MessageUtil.sendCenteredMessage(target, "§7§lOpponent(s): §b");
             for(Player opponent : arena.getOpponents(target))
-            MessageUtil.sendCenteredMessage(target, "§f§l-> " + opponent.getName());
+            MessageUtil.sendCenteredMessage(target, "§f§l" + opponent.getName());
             target.sendMessage(" ");
             MessageUtil.sendCenteredMessage(target, "§e§lGood Luck!");
             MessageUtil.sendCenteredMessage(target.getPlayer(), ChatColor.AQUA + ChatColor.STRIKETHROUGH.toString() + "-------------------------------------------------");

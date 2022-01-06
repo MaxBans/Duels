@@ -2,6 +2,7 @@ package cz.helheim.duels.managers;
 
 import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
+import cz.helheim.duels.arena.ArenaMode;
 import cz.helheim.duels.arena.ArenaType;
 import cz.helheim.duels.arena.team.ArenaTeam;
 import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
@@ -62,33 +63,44 @@ public class ScoreboardManager {
         }
     }
 
-    public static List<String> replace(Arena arena, Player pl, ArenaType type) {
-        List<String> list = Duels.getInstance().getConfig().getStringList(type.getFormattedName() + ".Scoreboard");
+    public static List<String> replace(Arena arena, Player pl, ArenaType type, ArenaMode mode) {
+        List<String> list = Duels.getInstance().getConfig().getStringList(type.getFormattedName() + "." +  mode.getName() + ".Scoreboard");
         placeholders = new HashMap<>();
         placeholders.put("%map%", arena.getMap().getName());
         placeholders.put("%builder%", arena.getMap().getBuilder());
         placeholders.put("%time%", arena.getTotalTimeCountdownTask().formatTime());
-        //placeholders.put("%opponent%", arena.getOpponent(pl).getPlayer().getName());
+        placeholders.put("%opponent_1%", arena.getOpponentsName(pl, 0));
+        if(arena.getOpponentsName(pl, 1) != null) {
+            placeholders.put("%opponent_2%", arena.getOpponentsName(pl, 1));
+        }
+        if(arena.getOpponentsName(pl, 2) != null) {
+            placeholders.put("%opponent_3%", arena.getOpponentsName(pl, 2));
+        }
+        if(arena.getOpponentsName(pl, 3) != null) {
+            placeholders.put("%opponent_4%", arena.getOpponentsName(pl, 3));
+        }
+
         placeholders.put("%id%", String.valueOf(arena.getID()));
         placeholders.put("%state%", arena.getState().getFormattedName());
         placeholders.put("%arena_type%", arena.getArenaType().getFormattedName());
         placeholders.put("%arena_mode%", arena.getArenaMode().getName());
         placeholders.put("%kills%", String.valueOf(arena.getGame().getKills().get(pl.getUniqueId())));
         placeholders.put("%goals%", String.valueOf(arena.getGame().getGoals().get(pl.getUniqueId())));
-       // placeholders.put("%opponent_hp%", (int) arena.getOpponent(pl).getHealth() + "§c§l♥");
+        // placeholders.put("%opponent_hp%", (int) arena.getOpponent(pl).getHealth() + "§c§l♥");
         //placeholders.put("%gapple_amount%", String.valueOf(InventoryManager.getAmountOf(Material.GOLDEN_APPLE, pl.getInventory())));
         //placeholders.put("%arrows_amount%", String.valueOf(InventoryManager.getAmountOf(Material.ARROW, pl.getInventory())));
         placeholders.put("%blue_points%", formatPoints(arena.getBlueTeam(), arena.getGame().getPoints().get(arena.getBlueTeam())));
         placeholders.put("%red_points%", formatPoints(arena.getRedTeam(), arena.getGame().getPoints().get(arena.getRedTeam())));
         List<String> replaced = replacePlaceholders(list, placeholders);
         return replaced;
+
     }
 
-    public static JPerPlayerScoreboard getScoreboard(Arena arena, ArenaType type) {
+    public static JPerPlayerScoreboard getScoreboard(Arena arena, ArenaType type, ArenaMode mode) {
         scoreboard = new JPerPlayerScoreboard((player) -> {
-            return Duels.getInstance().getConfig().getString(type.getFormattedName() + ".ScoreboardTitle").replace("%time%", arena.getTotalTimeCountdownTask().formatTime());
+            return Duels.getInstance().getConfig().getString(type.getFormattedName() + "." + mode.getName() + ".ScoreboardTitle").replace("%time%", arena.getTotalTimeCountdownTask().formatTime());
         }, (player) -> {
-            return replace(arena, player, type);
+            return replace(arena, player, type, mode);
         });
         return scoreboard;
     }

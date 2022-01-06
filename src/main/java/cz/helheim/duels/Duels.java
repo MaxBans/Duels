@@ -5,6 +5,8 @@ import cz.helheim.duels.Listeners.JoinListener;
 import cz.helheim.duels.Listeners.PlayerDeathListener;
 import cz.helheim.duels.commands.DuelCommand;
 import cz.helheim.duels.commands.DuelsCommand;
+import cz.helheim.duels.commands.QueueCommand;
+import cz.helheim.duels.game.Game;
 import cz.helheim.duels.items.KitItemManager;
 import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
@@ -21,7 +23,6 @@ public final class Duels extends JavaPlugin {
     private static Duels instance;
 
     private static MapManager mapManager;
-    private static KitItemManager kitItemManager;
     private FileUtil fileUtil;
 
     public Duels(){
@@ -42,7 +43,7 @@ public final class Duels extends JavaPlugin {
         fileUtil = new FileUtil(this);
         fileUtil.setupFiles();
         mapManager = new MapManager(fileUtil.getMapsYAML());
-        kitItemManager = new KitItemManager(fileUtil.getBuildUHCKitYAML());
+        Game.getArenaManager();
         register();
 
     }
@@ -57,6 +58,7 @@ public final class Duels extends JavaPlugin {
     public void register(){
         getCommand("autojoin").setExecutor(new DuelsCommand());
         getCommand("duel").setExecutor(new DuelCommand());
+        getCommand("queue").setExecutor(new QueueCommand());
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
@@ -65,7 +67,6 @@ public final class Duels extends JavaPlugin {
     public MapManager getMapManager(){
         return mapManager;
     }
-    public static KitItemManager getKitItemManager() { return kitItemManager; }
 
 }
 

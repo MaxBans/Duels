@@ -15,8 +15,8 @@ public class FileUtil {
     private static File theBridgeFolder;
 
     private FileConfiguration mapsYAML;
-    private FileConfiguration kitYAML;
-    private Duels duels;
+    private static FileConfiguration kitYAML;
+    private static Duels duels;
 
     public FileUtil(Duels duels){
         this.duels = duels;
@@ -91,7 +91,7 @@ public class FileUtil {
 
 
         getMapsYAML();
-        getBuildUHCKitYAML();
+        getKitYAML();
     }
 
     public static File getGameMapsFolder(ArenaType mode){
@@ -119,8 +119,8 @@ public class FileUtil {
         return mapsYAML;
     }
 
-    public FileConfiguration getBuildUHCKitYAML(){
-        File file = new File(duels.getDataFolder(), "BuildUHC_kit.yml");
+    public static FileConfiguration getKitYAML(){
+        File file = new File(duels.getDataFolder(), "kit.yml");
         if(!file.exists()){
             try {
                 file.createNewFile();

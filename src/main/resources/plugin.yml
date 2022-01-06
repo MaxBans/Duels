@@ -10,3 +10,7 @@ commands:
     description: "This command automatically joins you to the game"
   duel:
     description: "Duels a player"
+  queue:
+    aliases:
+      - "q"
+    description: "Usage: /queue <mode> <type> Example: /queue BuildUHC 1vs1"

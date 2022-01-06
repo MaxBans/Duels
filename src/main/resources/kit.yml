@@ -1,0 +1,122 @@
+Build UHC:
+  0:
+    material: DIAMOND_SWORD
+    name: "Diamond Sword"
+    amount: 1
+    enchantments:
+      DAMAGE_ALL: 3
+    slot: 0
+  1:
+    material: DIAMOND_AXE
+    name: "Diamond Axe"
+    amount: 1
+    slot: 1
+  2:
+    material: FISHING_ROD
+    name: "Fishing Rod"
+    amount: 1
+    slot: 2
+  3:
+    material: WOOD
+    name: "Wood"
+    amount: 64
+    slot: 3
+  4:
+    material: GOLDEN_APPLE
+    name: "Golden Apple"
+    amount: 6
+    slot: 4
+  5:
+    material: PAPER
+    name: "HEAD"
+    amount: 6
+    slot: 5
+  6:
+    material: LAVA_BUCKET
+    name: "Lava Bucket"
+    amount: 1
+    slot: 6
+  7:
+    material: WATER_BUCKET
+    name: "Water Bucket"
+    amount: 1
+    slot: 7
+  8:
+    material: BOW
+    name: "Bow"
+    amount: 1
+    enchantments:
+      ARROW_DAMAGE: 2
+    slot: 8
+  9:
+    material: ARROW
+    name: "Arrow"
+    amount: 16
+    slot: 9
+  30:
+    material: WOOD
+    name: "Wood"
+    amount: 64
+    slot: 30
+  33:
+    material: LAVA_BUCKET
+    name: "Lava Bucket"
+    amount: 1
+    slot: 33
+  34:
+    material: WATER_BUCKET
+    name: "Water Bucket"
+    amount: 1
+    slot: 34
+  armorItems:
+    0:
+      material: DIAMOND_HELMET
+      name: "Diamond Helmet"
+      type: HELMET
+      enchantments:
+        PROTECTION_ENVIRONMENTAL: 2
+    1:
+      material: DIAMOND_CHESTPLATE
+      name: "Diamond Chestplate"
+      type: CHESTPLATE
+      enchantments:
+        PROTECTION_PROJECTILE: 2
+    2:
+      material: DIAMOND_LEGGINGS
+      name: "Diamond Leggings"
+      type: LEGGINGS
+      enchantments:
+        PROTECTION_ENVIRONMENTAL: 2
+    3:
+      material: DIAMOND_BOOTS
+      name: "Diamond Boots"
+      type: BOOTS
+      enchantments:
+        PROTECTION_ENVIRONMENTAL: 2
+Classic Duels:
+  0:
+    material: DIAMOND_SWORD
+    name: "Diamond Sword"
+    amount: 1
+    enchantments:
+      DAMAGE_ALL: 3
+    slot: 0
+  armorItems:
+    0:
+      material: DIAMOND_HELMET
+      name: "Diamond Helmet"
+      type: HELMET
+      enchantments:
+      PROTECTION_ENVIRONMENTAL: 2
+
+
+
+
+
+
+
+
+
+
+
+

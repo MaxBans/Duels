@@ -12,6 +12,7 @@ import cz.helheim.duels.state.GameState;
 import cz.helheim.duels.task.EndingCountdownTask;
 import cz.helheim.duels.task.PreGameCountdownTask;
 import cz.helheim.duels.task.TotalTimeCountdownTask;
+import cz.helheim.duels.utils.FileUtil;
 import cz.helheim.duels.utils.MessageUtil;
 import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
 import org.bukkit.Bukkit;
@@ -47,6 +48,7 @@ public class Arena {
     private Player winner;
     private Player loser;
     private boolean isAvailable;
+    private final KitItemManager kitItemManager;
     private JPerPlayerScoreboard scoreboard;
 
     public Arena(int id, ArenaType arenaType, LocalGameMap map, ArenaMode mode) {
@@ -67,12 +69,12 @@ public class Arena {
         state = GameState.IDLE;
         this.arenaType = arenaType;
         this.isAvailable = true;
-
         this.preGameCountdownTask = new PreGameCountdownTask(this);
         this.totalTimeCountdownTask = new TotalTimeCountdownTask(this);
         this.endingCountdownTask = new EndingCountdownTask(this);
         this.game = new Game(this);
         teamManager = new TeamManager(this);
+        kitItemManager = new KitItemManager(FileUtil.getKitYAML(), arenaType);
     }
 
 
@@ -80,7 +82,7 @@ public class Arena {
         setState(GameState.IN_GAME);
         totalTimeCountdownTask.begin();
         sendMessage(ChatColor.GREEN + "Game started!");
-        this.scoreboard = ScoreboardManager.getScoreboard(this, getArenaType());
+        this.scoreboard = ScoreboardManager.getScoreboard(this, getArenaType(), getArenaMode());
         for (Player player : players) {
             alivePlayers.add(player);
             game.sendBeginningMessage(player);
@@ -123,8 +125,8 @@ public class Arena {
         if (scoreboard != null) {
             scoreboard.destroy();
         }
-        Game.getArenaManager().getPlayableArenas(getArenaType(), getArenaMode()).remove(this);
-        Game.getArenaManager().getActiveArenas(getArenaType(), getArenaMode()).remove(this);
+        ArenaRegistry.getPlayableArenas(getArenaType(), getArenaMode()).remove(this);
+        ArenaRegistry.getActiveArenas(getArenaType(), getArenaMode()).remove(this);
 
     }
 
@@ -146,8 +148,8 @@ public class Arena {
         player.setLevel(0);
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().clear();
-        KitItemManager.addKitItems(player.getInventory());
-        KitItemManager.suit(player);
+        kitItemManager.addKitItems(player.getInventory());
+        kitItemManager.suit(player);
         sendMessage(MessageUtil.getPrefix() + " §3" + player.getPlayer().getName() + " §7joined the game! §3(" + players.size() + ")");
         for (Player p : Bukkit.getOnlinePlayers()) {
             if(!players.contains(p)){
@@ -155,16 +157,19 @@ public class Arena {
             }
         }
 
-        player.sendMessage("DEBUG: "  + arenaMode.getName());
-        player.sendMessage("DEBUG: " + arenaType.getFormattedName());
-        //player.sendMessage("DEBUG: " + );
-
         if (players.size() == 1) {
             setState(GameState.WAITING_FOR_OPPONENT);
         }
         if (players.size() == arenaMode.getMaxPlayers()) {
             game.start();
         }
+    }
+
+    public String getOpponentsName(Player player, int i){
+        if(getOpponents(player).get(i) == null){
+            return null;
+        }
+        return getOpponents(player).get(i).getName();
     }
 
     public void removePlayer(Player player) {
@@ -194,6 +199,7 @@ public class Arena {
         if (!mode.equals(ArenaType.THE_BRIDGE)) {
             if(killer == null){
                 alivePlayers.remove(player);
+                teamManager.getTeam(player).getAlivePlayers().remove(player);
                 player.getInventory().clear();
                 addSpectator(player);
                 TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.RED + ChatColor.BOLD.toString() + "YOU DIED!");
@@ -201,6 +207,7 @@ public class Arena {
                 return;
             }
             alivePlayers.remove(player);
+            teamManager.getTeam(player).getAlivePlayers().remove(player);
             player.getInventory().clear();
             addSpectator(player);
             TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.RED + ChatColor.BOLD.toString() + "YOU DIED!");
@@ -239,7 +246,7 @@ public class Arena {
 
     public void setAvailable(boolean available) {
         if(!available){
-            Game.getArenaManager().getPlayableArenas(this.getArenaType(), getArenaMode()).remove(this);
+            ArenaRegistry.getPlayableArenas(this.getArenaType(), getArenaMode()).remove(this);
         }
         this.isAvailable = available;
     }
@@ -381,5 +388,9 @@ public class Arena {
 
     public TeamManager getTeamManager(){
         return teamManager;
+    }
+
+    public KitItemManager getKitItemManager() {
+        return kitItemManager;
     }
 }
