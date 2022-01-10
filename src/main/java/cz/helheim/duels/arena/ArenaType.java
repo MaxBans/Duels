@@ -1,9 +1,9 @@
 package cz.helheim.duels.arena;
 
 public enum ArenaType {
-    BUILD_UHC("Build UHC"),
-    THE_BRIDGE("The Bridge"),
-    CLASSIC_DUELS("Classic Duels");
+    BUILD_UHC("BuildUHC"),
+    THE_BRIDGE("TheBridge"),
+    CLASSIC_DUELS("ClassicDuels");
 
     private final String name;
     ArenaType(String name){

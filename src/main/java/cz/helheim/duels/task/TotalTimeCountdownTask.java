@@ -3,6 +3,7 @@ package cz.helheim.duels.task;
 import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.state.GameState;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TotalTimeCountdownTask extends BukkitRunnable {
@@ -26,6 +27,9 @@ public class TotalTimeCountdownTask extends BukkitRunnable {
         if (timeLeft == 0) {
             isRunning = false;
             arena.reset();
+            for(Player player : arena.getPlayers()){
+                player.setLevel(timeLeft);
+            }
             cancel();
         }else {
             if(arena.getState().equals(GameState.IN_GAME)) {

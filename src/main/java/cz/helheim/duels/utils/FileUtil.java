@@ -13,8 +13,9 @@ public class FileUtil {
     private static File classicMapsFolder;
     private static File buildUHCFolder;
     private static File theBridgeFolder;
+    private static File menuFolder;
 
-    private FileConfiguration mapsYAML;
+    private static FileConfiguration mapsYAML;
     private static FileConfiguration kitYAML;
     private static Duels duels;
 
@@ -69,9 +70,10 @@ public class FileUtil {
     public void setupFiles(){
         duels.getDataFolder().mkdirs();
         gameMapsFolder = new File(duels.getDataFolder(), "gameMaps");
-        classicMapsFolder = new File(gameMapsFolder, "Classic Duels");
+        classicMapsFolder = new File(gameMapsFolder, "ClassicDuels");
         buildUHCFolder = new File(gameMapsFolder, "BuildUHC");
-        theBridgeFolder = new File(gameMapsFolder, "The Bridge");
+        theBridgeFolder = new File(gameMapsFolder, "TheBridge");
+        menuFolder = new File(Duels.getInstance().getDataFolder(), "Menus");
 
         if(!gameMapsFolder.exists()){
             gameMapsFolder.mkdirs();
@@ -89,9 +91,16 @@ public class FileUtil {
             theBridgeFolder.mkdirs();
         }
 
+        if(!menuFolder.exists()){
+            menuFolder.mkdirs();
+        }
 
         getMapsYAML();
         getKitYAML();
+    }
+
+    public static File getMenuFolder(){
+        return menuFolder;
     }
 
     public static File getGameMapsFolder(ArenaType mode){
@@ -106,7 +115,7 @@ public class FileUtil {
         return theBridgeFolder;
     }
 
-    public FileConfiguration getMapsYAML(){
+    public static FileConfiguration getMapsYAML(){
         File file = new File(duels.getDataFolder(), "maps.yml");
         if(!file.exists()){
             try {

@@ -6,8 +6,6 @@ authors: [ Maxbans9 ]
 description: Duels plugin for Helheim network
 
 commands:
-  autojoin:
-    description: "This command automatically joins you to the game"
   duel:
     description: "Duels a player"
   queue:

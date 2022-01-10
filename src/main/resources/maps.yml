@@ -4,12 +4,13 @@ BuildUHC:
     0:
       name: Fractal
       builder: "Nejaky Ape"
-      SPAWN_ONE:
+      mode: SOLO
+      BLUE_SPAWN:
         - "1,65,-38"
         - "3,65,-39"
-      SPAWN_TWO:
-        - "-1,66, -6"
-        - "-3, 66, -8"
+      RED_SPAWN:
+        - "1,65,-38"
+        - "3,65,-39"
       PORTAL_ONE:
         - "-45,55,64"
         - "-48,53,65"
@@ -17,10 +18,42 @@ BuildUHC:
     1:
       name: Arena
       builder: "idk jakoby"
-      SPAWN_ONE:
+      mode: SOLO
+      BLUE_SPAWN:
         - "1,65,-38"
         - "3,65,-39"
-      SPAWN_TWO:
+      RED_SPAWN:
+        - "-1,66, -6"
+        - "-3, 66, -8"
+      PORTAL_ONE:
+        - "-45,55,64"
+        - "-48,53,65"
+      PORTAL_TWO:
+        - "-49,55,64"
+        - "-45,53,65"
+      SPECTATOR_SPAWN: "0,81,3"
+    2:
+      name: Fractal
+      builder: "Nejaky Ape"
+      mode: DUO
+      BLUE_SPAWN:
+        - "1,65,-38"
+        - "3,65,-39"
+      RED_SPAWN:
+        - "1,65,-38"
+        - "3,65,-39"
+      PORTAL_ONE:
+        - "-45,55,64"
+        - "-48,53,65"
+      SPECTATOR_SPAWN: "0,81,3"
+    3:
+      name: Arena
+      builder: "idk jakoby"
+      mode: DUO
+      BLUE_SPAWN:
+        - "1,65,-38"
+        - "3,65,-39"
+      RED_SPAWN:
         - "-1,66, -6"
         - "-3, 66, -8"
       PORTAL_ONE:
@@ -35,6 +68,50 @@ ClassicDuels:
     0:
       name: Museum
       builder: "Nejaky Ape"
-      SPAWN_ONE: "1,65,-38"
-      SPAWN_TWO: "-1,66,-6"
+      mode: SOLO
+      BLUE_SPAWN: "1,65,-38"
+      RED_SPAWN: "-1,66,-6"
       SPECTATOR_SPAWN: 0,81,3
+    1:
+      name: Reef
+      builder: "Nejaky Ape"
+      mode: SOLO
+      BLUE_SPAWN: "1,65,-38"
+      RED_SPAWN: "-1,66,-6"
+      SPECTATOR_SPAWN: 0,81,3
+TheBridge:
+  maps:
+    0:
+      name: Nether
+      builder: "PlanetMC"
+      mode: SOLO
+      BLUE_SPAWN:
+        - "1649,73,1261"
+        - "1649,73,1261"
+      RED_SPAWN:
+        - "1567,73,1261"
+        - "1567,73,1261"
+      BLUE_PORTAL:
+        - "1651,63,1263"
+        - "1653,63,1259"
+      RED_PORTAL:
+        - "1565,63,1259"
+        - "1563,63,1263"
+      SPECTATOR_SPAWN: "1609,74,1261"
+    0:
+      name: Nether
+      builder: "PlanetMC"
+      mode: SOLO
+      BLUE_SPAWN:
+        - "1649,73,1261"
+        - "1649,73,1261"
+      RED_SPAWN:
+        - "1567,73,1261"
+        - "1567,73,1261"
+      BLUE_PORTAL:
+        - "1651,63,1263"
+        - "1653,63,1259"
+      RED_PORTAL:
+        - "1565,63,1259"
+        - "1563,63,1263"
+      SPECTATOR_SPAWN: "1609,74,1261"

@@ -48,4 +48,8 @@ public class MessageUtil {
     public static String getPrefix(){
         return ChatColor.translateAlternateColorCodes('&', Duels.getInstance().getConfig().getString("prefix"));
     }
+
+    public static String getPrefix(String s){
+        return ChatColor.translateAlternateColorCodes('&', Duels.getInstance().getConfig().getString("prefix")).replace("Duels", s);
+    }
 }

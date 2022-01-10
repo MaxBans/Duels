@@ -3,6 +3,7 @@ package cz.helheim.duels.maps;
 import cz.helheim.duels.arena.ArenaMode;
 import cz.helheim.duels.arena.ArenaType;
 import cz.helheim.duels.utils.FileUtil;
+import cz.helheim.duels.utils.RandomUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,97 +13,42 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class MapManager {
-    private static final List<LocalGameMap> buildUHCMaps = new ArrayList<>();
-    private static final List<LocalGameMap> classicDuelsMaps = new ArrayList<>();
-    private static final List<LocalGameMap> bridgeMaps = new ArrayList<>();
+    private static final List<LocalGameMap> maps = new ArrayList<>();
 
-    public MapManager(FileConfiguration mapConfig){
-        ConfigurationSection buhcSection = mapConfig.getConfigurationSection("BuildUHC.maps");
-        ConfigurationSection classicSection = mapConfig.getConfigurationSection("ClassicDuels.maps");
-        ConfigurationSection theBridgeSection = mapConfig.getConfigurationSection("TheBridge.maps");
 
-        if(buhcSection == null){
-            Bukkit.getLogger().severe("Setup 'BuildUHC.maps' in maps.yml!");
-        }
-        if(classicSection == null){
-            Bukkit.getLogger().severe("Setup 'ClassicDuels.maps' in maps.yml!");
-        }
-        if(theBridgeSection == null){
-            Bukkit.getLogger().severe("Setup 'TheBridge.maps' in maps.yml!");
+    public MapManager(FileConfiguration mapConfig, ArenaType type){
+        ConfigurationSection mapSection = mapConfig.getConfigurationSection(type.getFormattedName() + ".maps");
+        if(mapSection == null){
+            Bukkit.getLogger().severe("Setup " + type.getFormattedName() + "'.maps' in maps.yml!");
         }
 
-        for(String key : buhcSection.getKeys(false)){
-            ConfigurationSection section = buhcSection.getConfigurationSection(key);
+        for(String key : mapSection.getKeys(false)){
+            ConfigurationSection section = mapSection.getConfigurationSection(key);
             if(section != null) {
+                UUID uuid = UUID.randomUUID();
+                String[] ids = uuid.toString().split("-");
+                String id = ids[0];
                 String name = section.getString("name");
                 ArenaMode mode = ArenaMode.valueOf(section.getString("mode"));
                 String builder = section.getString("builder");
-                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(ArenaType.BUILD_UHC), false, name, ArenaType.BUILD_UHC, mode, builder, section);
-                buildUHCMaps.add(map);
-            }
-        }
-
-        for(String key : classicSection.getKeys(false)){
-            ConfigurationSection section = classicSection.getConfigurationSection(key);
-            if(section != null) {
-                String name = section.getString("name");
-                ArenaMode mode = ArenaMode.valueOf(section.getString("mode"));
-                String builder = section.getString("builder");
-                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(ArenaType.CLASSIC_DUELS), false, name, ArenaType.CLASSIC_DUELS, mode, builder, section);
-                getClassicDuelsMaps().add(map);
-            }
-        }
-
-        for(String key : theBridgeSection.getKeys(false)){
-            ConfigurationSection section = theBridgeSection.getConfigurationSection(key);
-            if(section != null) {
-                String name = section.getString("name");
-                ArenaMode mode = ArenaMode.valueOf(section.getString("mode"));
-                String builder = section.getString("builder");
-                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(ArenaType.THE_BRIDGE), false, name, ArenaType.THE_BRIDGE, mode, builder, section);
-                getBridgeMaps().add(map);
+                LocalGameMap map = new LocalGameMap(FileUtil.getGameMapsFolder(type), false, name, type, mode, builder, section, id);
+                System.out.println(id);
+                maps.add(map);
             }
         }
     }
 
-    public static LocalGameMap getRandomMap(ArenaType type, ArenaMode mode){
+    public LocalGameMap getRandomMap(ArenaMode mode){
         Random random = new Random();
-        LocalGameMap map;
-        List<LocalGameMap> maps = new ArrayList<>();
-        switch (type){
-            case BUILD_UHC:
-                for(LocalGameMap localGameMap : getBuildUHCMaps()){
-                    if(localGameMap.getArenaMode().equals(mode)){
-                        maps.add(localGameMap);
-                    }
-                }
-                System.out.println(maps.size());
-                map = maps.get(random.nextInt(maps.size()));
-                break;
-            case CLASSIC_DUELS:
-                for(LocalGameMap localGameMap : getClassicDuelsMaps()){
-                    if(localGameMap.getArenaMode().equals(mode)){
-                        maps.add(localGameMap);
-                    }
-                }
-                map = maps.get(random.nextInt(maps.size() + 1));
-                break;
-            case THE_BRIDGE:
-                for(LocalGameMap localGameMap : getBridgeMaps()){
-                    if(localGameMap.getArenaMode().equals(mode)){
-                        maps.add(localGameMap);
-                    }
-                }
-                map = maps.get(random.nextInt(maps.size() + 1));
-                break;
-            default:
-                map = getClassicDuelsMaps().get(0);
-                break;
+        List<LocalGameMap> modeMaps = new ArrayList<>();
+        for(LocalGameMap localGameMap : maps) {
+            if(localGameMap.getArenaMode().equals(mode))
+            modeMaps.add(localGameMap);
         }
-        if(!map.isLoaded()) map.load();
-        return map;
+        return modeMaps.get(random.nextInt(modeMaps.size()));
     }
 
     public static Location locationFromString(String string, World world){
@@ -113,14 +59,5 @@ public class MapManager {
         return new Location(world, x, y, z);
     }
 
-    public static List<LocalGameMap> getClassicDuelsMaps() {
-        return classicDuelsMaps;
-    }
-    public static List<LocalGameMap> getBridgeMaps() {
-        return bridgeMaps;
-    }
-    public static List<LocalGameMap> getBuildUHCMaps(){
-        return buildUHCMaps;
-    }
 
 }

@@ -35,6 +35,9 @@ public class PreGameCountdownTask extends BukkitRunnable {
             isRunning = false;
             cancel();
             arena.start();
+            for(Player player : arena.getPlayers()){
+                player.setLevel(timeLeft);
+            }
             return;
         }
         for (Player player : arena.getPlayers()) {

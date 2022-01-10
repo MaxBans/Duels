@@ -4,20 +4,13 @@ import cz.helheim.duels.Listeners.GameListener;
 import cz.helheim.duels.Listeners.JoinListener;
 import cz.helheim.duels.Listeners.PlayerDeathListener;
 import cz.helheim.duels.commands.DuelCommand;
-import cz.helheim.duels.commands.DuelsCommand;
 import cz.helheim.duels.commands.QueueCommand;
 import cz.helheim.duels.game.Game;
-import cz.helheim.duels.items.KitItemManager;
 import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
 import cz.helheim.duels.utils.FileUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.io.IOException;
 
 public final class Duels extends JavaPlugin {
     private static Duels instance;
@@ -42,21 +35,17 @@ public final class Duels extends JavaPlugin {
         saveDefaultConfig();
         fileUtil = new FileUtil(this);
         fileUtil.setupFiles();
-        mapManager = new MapManager(fileUtil.getMapsYAML());
-        Game.getArenaManager();
+        //mapManager = new MapManager(fileUtil.getMapsYAML()); //TODO
         register();
 
     }
 
     @Override
     public void onDisable() {
-        for(LocalGameMap map : MapManager.getBuildUHCMaps()){
-            map.unload();
-        }
+
     }
 
     public void register(){
-        getCommand("autojoin").setExecutor(new DuelsCommand());
         getCommand("duel").setExecutor(new DuelCommand());
         getCommand("queue").setExecutor(new QueueCommand());
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);

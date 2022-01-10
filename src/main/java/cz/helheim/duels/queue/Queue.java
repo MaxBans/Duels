@@ -5,6 +5,7 @@ import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.arena.ArenaMode;
 import cz.helheim.duels.arena.ArenaRegistry;
 import cz.helheim.duels.arena.ArenaType;
+import cz.helheim.duels.utils.MessageUtil;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayDeque;
@@ -42,7 +43,6 @@ public class Queue {
         for (Queue queue : OPEN_QUEUES) {
             if (!CLOSED_QUEUES.contains(queue)) {
                 if (queue.getArenaMode().equals(mode) && queue.getArenaType().equals(type)) {
-                    System.out.println("DEBUG: Found queue");
                     queues.add(queue);
                 }
             }
@@ -93,20 +93,16 @@ public class Queue {
     public void addPlayer(Player player) {
         playersQueued.add(player);
         TitleAPI.sendTitle(player, 20, 30, 20, "§aYou joined the queue!");
+        player.sendMessage(MessageUtil.getPrefix("Queue") + " §7You joined Queue for §b" + arenaType.getFormattedName() + "§3 " + arenaMode.getName());
         for (Player gamePlayer : playersQueued) {
             int needed = getArenaMode().getMaxPlayers() - playersQueued.size();
-            if (needed == 0) {
-                gamePlayer.getPlayer().sendMessage("§8" + player.getPlayer().getName() + " §7has joined the queue! (Full queue!)");
-            } else if (needed == 1) {
-                gamePlayer.getPlayer().sendMessage("§8" + player.getPlayer().getName() + " §7has joined the queue! (need " + needed + " more player)");
-            } else {
-                gamePlayer.getPlayer().sendMessage("§8" + player.getPlayer().getName() + " §7has joined the queue! (need " + needed + " more players)");
-            }
+            gamePlayer.getPlayer().sendMessage(MessageUtil.getPrefix("Queue") + "§3 " + player.getPlayer().getName() + " §7has joined the queue! §b" + getPlayersQueued().size() + "/" + arenaMode.getMaxPlayers());
         }
         if (playersQueued.size() == getArenaMode().getMaxPlayers()) {
             onQueueFull();
         }
     }
+
 
     public void removePlayer(Player player) {
         playersQueued.remove(player);

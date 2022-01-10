@@ -27,17 +27,33 @@ public class QueueCommand implements CommandExecutor {
             return true;
         }
 
+
         if(args.length == 0){
             gamePlayer.sendMessage("§cPlease type a mode!");
             return true;
         }
 
         if(args.length == 1){
+            if(args[0].equalsIgnoreCase("leave")){
+                if(!Queue.isPlayerInQueue(gamePlayer)){
+                    gamePlayer.sendMessage("§cYou are not in a Queue");
+                    return false;
+                }
+
+                Queue playersQueue = Queue.getPlayerQueue(gamePlayer);
+                playersQueue.removePlayer(gamePlayer);
+                return true;
+            }
             gamePlayer.sendMessage("§cPlease type an type");
             return true;
         }
 
         if(args.length == 2) {
+            if(Queue.isPlayerInQueue(gamePlayer)){
+                gamePlayer.sendMessage("§cYou are already in queue dummy!");
+                return false;
+            }
+
             ArenaMode mode = ArenaMode.getByName(args[0]);
             ArenaType type = ArenaType.getByName(args[1]);
             if (mode == null) {

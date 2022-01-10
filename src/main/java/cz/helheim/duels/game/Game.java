@@ -23,10 +23,8 @@ public class Game {
     private final HashMap<UUID, Integer> goals;
 
     private final HashMap<ArenaTeam, Integer> points;
-    public static ArenaRegistry arenaManager;
 
     public Game(Arena arena){
-        ArenaRegistry arenaManager = new ArenaRegistry();
         this.arena = arena;
         this.kills = new HashMap<>();
         this.points = new HashMap<>();
@@ -36,7 +34,7 @@ public class Game {
     public void start(){
         arena.getPreGameCountdownTask().begin();
         arena.sendMessage(MessageUtil.getPrefix() + " §7 Game is starting!");
-        arenaManager.getPlayableArenas(arena.getArenaType(), arena.getArenaMode()).remove(arena);
+        ArenaRegistry.getPlayableArenas(arena.getArenaType(), arena.getArenaMode()).remove(arena);
         for(ArenaTeam team : arena.getTeams()){
             points.put(team, 0);
         }
@@ -50,8 +48,8 @@ public class Game {
         if(ArenaRegistry.isInArena(player)){
             ArenaRegistry.getArena(player).removePlayer(player);
         }
-        if(!arenaManager.getPlayableArenas(type, mode).isEmpty()) {
-            for (Arena arena : arenaManager.getPlayableArenas(type, mode)) {
+        if(!ArenaRegistry.getPlayableArenas(type, mode).isEmpty()) {
+            for (Arena arena : ArenaRegistry.getPlayableArenas(type, mode)) {
                 if (arena.getState().equals(GameState.WAITING_FOR_OPPONENT)) {
                     arena.addPlayer(player);
                     return;
@@ -59,7 +57,7 @@ public class Game {
             }
         }else {
             Random random = new Random();
-            Arena arena = arenaManager.getPlayableArenas(type, mode).get(random.nextInt(arenaManager.getPlayableArenas(type, mode).size() + 1));
+            Arena arena = ArenaRegistry.getPlayableArenas(type, mode).get(random.nextInt(ArenaRegistry.getPlayableArenas(type, mode).size() + 1));
             arena.addPlayer(player);
         }
 
@@ -71,8 +69,9 @@ public class Game {
             MessageUtil.sendCenteredMessage(target, ChatColor.GREEN + ChatColor.BOLD.toString() + arena.getArenaMode().getName());
             MessageUtil.sendCenteredMessage(target, "§b§lEliminate your opponent!");
             MessageUtil.sendCenteredMessage(target, "§7§lOpponent(s): §b");
-            for(Player opponent : arena.getOpponents(target))
-            MessageUtil.sendCenteredMessage(target, "§f§l" + opponent.getName());
+            for(Player opponent : arena.getOpponents(target)) {
+                MessageUtil.sendCenteredMessage(target, "§f§l" + opponent.getName());
+            }
             target.sendMessage(" ");
             MessageUtil.sendCenteredMessage(target, "§e§lGood Luck!");
             MessageUtil.sendCenteredMessage(target.getPlayer(), ChatColor.AQUA + ChatColor.STRIKETHROUGH.toString() + "-------------------------------------------------");
@@ -94,14 +93,29 @@ public class Game {
         player.getInventory().setBoots(null);
     }
 
-        public static ArenaRegistry getArenaManager(){
-        return arenaManager;
-        }
+
 
     public void addKill(Player player){
-        int currentKills = getKills().get(player.getUniqueId());
-        kills.put(player.getUniqueId(), currentKills++);
+        kills.put(player.getUniqueId(), getKills().get(player.getUniqueId()) + 1);
     }
+
+    public void score(ArenaTeam team, Player scorer){
+        getGoals().put(scorer.getUniqueId(), getGoals().get(scorer.getUniqueId()) + 1);
+        getPoints().put(team, getPoints().get(team) + 1);
+        for(Player pl : arena.getPlayers()){
+            pl.teleport(arena.getTeamManager().getTeam(pl).getSpawn().getRandomLocation());
+        }
+        arena.sendMessage(MessageUtil.getPrefix() + team.getColor() + "" + scorer.getName() + " §7scored a goal!");
+        arena.sendTitle(team.getColor() + "§l" + scorer.getName() + " scored!", "§7" + getPoints().get(arena.getRedTeam()) + " : " +  getPoints().get(arena.getBlueTeam()));
+        scorer.getInventory().clear();
+        arena.getKitItemManager().addKitItems(scorer.getInventory());
+        if(getPoints().get(team) >= 5){
+            arena.setWinner(team);
+            arena.setState(GameState.WINNER_ANNOUNCE);
+        }
+    }
+
+
     public HashMap<UUID, Integer> getKills() {
         return kills;
     }

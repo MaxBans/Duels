@@ -73,7 +73,7 @@ public class InviteManager {
         }
 
         inviter.sendMessage(MessageUtil.getPrefix() +  " §7Player " + accepter.getName() + " accepted your duel!");
-
+        ArenaRegistry registry = new ArenaRegistry();
         Arena arena = ArenaRegistry.createRandomArena(type, mode);
         invites.remove(inviter);
         Bukkit.getScheduler().cancelTask(task);

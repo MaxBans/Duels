@@ -1,10 +1,15 @@
 package cz.helheim.duels.Listeners;
 
+import com.connorlinfoot.titleapi.TitleAPI;
 import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.arena.ArenaMode;
 import cz.helheim.duels.arena.ArenaRegistry;
-import cz.helheim.duels.game.Game;
+import cz.helheim.duels.arena.ArenaType;
+import cz.helheim.duels.arena.team.TeamManager;
+import cz.helheim.duels.queue.Queue;
 import cz.helheim.duels.state.GameState;
+import cz.helheim.duels.utils.Cuboid;
+import cz.helheim.duels.utils.MessageUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,16 +17,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 
 public class GameListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (ArenaRegistry.isInArena(player)) {
+            Arena arena = ArenaRegistry.getArena(player);
             if (ArenaRegistry.getArena(player).getState().equals(GameState.PREGAME) || ArenaRegistry.getArena(player).getState().equals(GameState.WAITING_FOR_OPPONENT) || ArenaRegistry.getArena(player).getState().equals(GameState.IDLE)) {
                 double xTo = event.getTo().getX();
                 double xFrom = event.getFrom().getX();
@@ -37,13 +40,43 @@ public class GameListener implements Listener {
     }
 
     @EventHandler
+    public void onPortal(PlayerMoveEvent event){
+        Player player = event.getPlayer();
+        if(ArenaRegistry.isInArena(event.getPlayer())){
+            Arena arena = ArenaRegistry.getArena(event.getPlayer());
+            if(arena.getArenaType().equals(ArenaType.THE_BRIDGE)){
+                if(arena.getMap().getRED_PORTAL().isIn(player)){
+                    //IF PLAYER JUMPS TO RED PORTAL
+                    if(arena.getTeamManager().getTeam(player).equals(arena.getBlueTeam())){
+                        //PLAYER JUMPED TO ENEMY PORTAL
+                        arena.getGame().score(arena.getBlueTeam(), player);
+                    }else{
+                        player.sendMessage(MessageUtil.getPrefix() + " §7You jumped to your own portal. Enjoy death :)");
+                    }
+                }else if(arena.getMap().getBLUE_PORTAL().isIn(player)){
+                    if(arena.getTeamManager().getTeam(player).equals(arena.getRedTeam())){
+                        //PLAYER JUMPED TO ENEMY PORTAL
+                        arena.getGame().score(arena.getRedTeam(), player);
+                    }else{
+                        player.sendMessage(MessageUtil.getPrefix() + " §7You jumped to your own portal. Enjoy death :)");
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void onRightClick(PlayerInteractEvent e) {
         if (e.getPlayer().getItemInHand() == null || e.getPlayer().getItemInHand().getType().equals(Material.AIR))
             return;
         if(ArenaRegistry.isInArena(e.getPlayer())) {
             if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§e§lFind new Arena") && e.getPlayer().getItemInHand().getType().equals(Material.PAPER)) {
-                    Game.autoJoin(e.getPlayer(), ArenaRegistry.getArena(e.getPlayer()).getArenaType(), ArenaRegistry.getArena(e.getPlayer()).getArenaMode());
+                    ArenaMode mode = ArenaRegistry.getArena(e.getPlayer()).getArenaMode();
+                    ArenaType type = ArenaRegistry.getArena(e.getPlayer()).getArenaType();
+                    ArenaRegistry.getArena(e.getPlayer()).removePlayer(e.getPlayer());
+                    Queue queue = Queue.getQueues(mode, type).get(0);
+                    queue.addPlayer(e.getPlayer());
                 }
             }
         }

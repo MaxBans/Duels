@@ -1,7 +1,11 @@
 package cz.helheim.duels.arena;
 
+import cz.helheim.duels.Duels;
+import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
 import cz.helheim.duels.state.GameState;
+import cz.helheim.duels.utils.FileUtil;
+import cz.helheim.duels.utils.RandomUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -14,10 +18,11 @@ public class ArenaRegistry {
     private static final ArrayList<Arena> playableArenas = new ArrayList<>();
 
 
+
     public static Arena createRandomArena(ArenaType type, ArenaMode mode) {
-        int id = (int) ((Math.random() * (9999 - 1000)) + 1000);
-        Bukkit.getLogger().severe(String.valueOf(id));
-        Arena arena = new Arena(id, type, MapManager.getRandomMap(type, mode), mode);
+        MapManager mapManager = new MapManager(FileUtil.getMapsYAML(), type);
+        LocalGameMap randomMap = mapManager.getRandomMap(mode);
+        Arena arena = new Arena(randomMap.getId(), type, randomMap, mode);
         activeArenas.add(arena);
         playableArenas.add(arena);
         return arena;
@@ -42,7 +47,7 @@ public class ArenaRegistry {
         return null;
     }
 
-    public static Arena getArena(int id) {
+    public static Arena getArena(String id) {
         for (Arena arena : activeArenas) {
             if (arena.getID() == id) {
                 return arena;
@@ -52,11 +57,11 @@ public class ArenaRegistry {
         return null;
     }
 
-    public static boolean isInGame(int id) {
+    public static boolean isInGame(String id) {
         return getArena(id).getState() == GameState.IN_GAME;
     }
 
-    public static boolean isIdle(int id) {
+    public static boolean isIdle(String id) {
         return getArena(id).getState() == GameState.IDLE;
     }
 
@@ -71,6 +76,7 @@ public class ArenaRegistry {
     }
 
     public static List<Arena> getPlayableArenas(ArenaType type, ArenaMode mode) {
+        ArenaRegistry registry = new ArenaRegistry();
         if (activeArenas.isEmpty()) {
                 createRandomArena(type, mode);
             }

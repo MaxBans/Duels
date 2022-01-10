@@ -29,8 +29,11 @@ public class EndingCountdownTask extends BukkitRunnable {
         timeLeft--;
         if (timeLeft == 0) {
             isRunning = false;
-            cancel();
+            for(Player player : arena.getPlayers()){
+                player.setLevel(timeLeft);
+            }
             arena.reset();
+            cancel();
         }
         for(Player player : arena.getPlayers()){
             player.setLevel(timeLeft);

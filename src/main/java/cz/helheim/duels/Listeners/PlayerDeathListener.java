@@ -87,75 +87,72 @@ public class PlayerDeathListener implements Listener {
                         if (arena.isSpectator(p) || arena.isDead(p)) {
                             return;
                         }
-                        if(!arena.getArenaType().equals(ArenaType.THE_BRIDGE)) arena.getScoreboard().updateScoreboard();
-
-                        if ((e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) || (e.getCause() == EntityDamageEvent.DamageCause.FIRE)) {
-                            if (lastHitUuid.containsKey(p.getUniqueId())) {
-                                UUID killedID = lastHitUuid.get(p.getUniqueId());
-                                Player killer = Bukkit.getPlayer(killedID);
-                                arena.killPlayer(p, killer, arena.getArenaType());
-                            } else {
-                                arena.killPlayer(p, null , arena.getArenaType());
+                            if ((e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) || (e.getCause() == EntityDamageEvent.DamageCause.FIRE)) {
+                                if (lastHitUuid.containsKey(p.getUniqueId())) {
+                                    UUID killedID = lastHitUuid.get(p.getUniqueId());
+                                    Player killer = Bukkit.getPlayer(killedID);
+                                    arena.killPlayer(p, killer, arena.getArenaType());
+                                } else {
+                                    arena.killPlayer(p, null, arena.getArenaType());
+                                    e.setCancelled(true);
+                                    p.setHealth(20D);
+                                    p.setFoodLevel(20);
+                                }
+                            } else if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                                 e.setCancelled(true);
                                 p.setHealth(20D);
                                 p.setFoodLevel(20);
-                            }
-                        } else if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                            e.setCancelled(true);
-                            p.setHealth(20D);
-                            p.setFoodLevel(20);
-                            arena.killPlayer(p, null, arena.getArenaType());
-
-                        } else if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
-
-                            if (lastHitUuid.containsKey(p.getUniqueId())) {
-                                UUID killedID = lastHitUuid.get(p.getUniqueId());
-                                Player killer = Bukkit.getPlayer(killedID);
-                                e.setCancelled(true);
-                                arena.killPlayer(p, killer, arena.getArenaType());
-
-                            } else {
                                 arena.killPlayer(p, null, arena.getArenaType());
+
+                            } else if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                                if (lastHitUuid.containsKey(p.getUniqueId())) {
+                                    UUID killedID = lastHitUuid.get(p.getUniqueId());
+                                    Player killer = Bukkit.getPlayer(killedID);
+                                    e.setCancelled(true);
+                                    arena.killPlayer(p, killer, arena.getArenaType());
+
+                                } else {
+                                    arena.killPlayer(p, null, arena.getArenaType());
+                                    e.setCancelled(true);
+                                    p.setHealth(20D);
+                                    p.setFoodLevel(20);
+                                }
+                            } else if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+                                EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
                                 e.setCancelled(true);
+                                if (event.getDamager() instanceof Player) {
+                                    Player killer = (Player) event.getDamager();
+                                    arena.killPlayer(p, killer, arena.getArenaType());
+
+                                } else {
+                                    arena.killPlayer(p, null, arena.getArenaType());
+
+                                }
+                                p.setHealth(20D);
+                                p.setFoodLevel(20);
+                            } else if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+                                EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
+                                Projectile projectile = (Projectile) event.getDamager();
+                                if (((projectile.getShooter() instanceof Player)) && ((event.getEntity() instanceof Player))) {
+                                    Player player = ((Player) event.getEntity()).getPlayer();
+                                    Player killer = ((Player) projectile.getShooter()).getPlayer();
+                                    arena.killPlayer(player, killer, arena.getArenaType());
+
+                                    e.setCancelled(true);
+                                    event.setCancelled(true);
+                                }
+                            } else {
+                                System.out.println("statement not added yet.");
+                                e.setCancelled(true);
+                                arena.killPlayer(p, null, arena.getArenaType());
                                 p.setHealth(20D);
                                 p.setFoodLevel(20);
                             }
-                        } else if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-                            EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
-                            e.setCancelled(true);
-                            if (event.getDamager() instanceof Player) {
-                                Player killer = (Player) event.getDamager();
-                                arena.killPlayer(p, killer, arena.getArenaType());
-
-                            } else {
-                                arena.killPlayer(p, null,arena.getArenaType());
-
-                            }
-                            p.setHealth(20D);
-                            p.setFoodLevel(20);
-                        } else if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
-                            EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
-                            Projectile projectile = (Projectile) event.getDamager();
-                            if (((projectile.getShooter() instanceof Player)) && ((event.getEntity() instanceof Player))) {
-                                Player player = ((Player) event.getEntity()).getPlayer();
-                                Player killer = ((Player) projectile.getShooter()).getPlayer();
-                                arena.killPlayer(player, killer, arena.getArenaType());
-
-                                e.setCancelled(true);
-                                event.setCancelled(true);
-                            }
-                        } else {
-                            System.out.println("statement not added yet.");
-                            e.setCancelled(true);
-                            arena.killPlayer(p, null, arena.getArenaType());
-                            p.setHealth(20D);
-                            p.setFoodLevel(20);
                         }
                     }
                 }
             }
-        }
-    }
+         }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void checkDead(EntityDamageEvent e) {

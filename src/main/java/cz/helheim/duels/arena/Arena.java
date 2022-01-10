@@ -8,6 +8,7 @@ import cz.helheim.duels.items.KitItemManager;
 import cz.helheim.duels.managers.ConfigManager;
 import cz.helheim.duels.managers.ScoreboardManager;
 import cz.helheim.duels.maps.LocalGameMap;
+import cz.helheim.duels.queue.Queue;
 import cz.helheim.duels.state.GameState;
 import cz.helheim.duels.task.EndingCountdownTask;
 import cz.helheim.duels.task.PreGameCountdownTask;
@@ -15,10 +16,7 @@ import cz.helheim.duels.task.TotalTimeCountdownTask;
 import cz.helheim.duels.utils.FileUtil;
 import cz.helheim.duels.utils.MessageUtil;
 import dev.jcsoftware.jscoreboards.JPerPlayerScoreboard;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +26,7 @@ import java.util.*;
 
 public class Arena {
 
-    private final int id;
+    private final String id;
     private final Set<Player> players;
     private final Set<Player> alivePlayers;
     private final List<Player> spectators;
@@ -45,21 +43,21 @@ public class Arena {
     private PreGameCountdownTask preGameCountdownTask;
     private TotalTimeCountdownTask totalTimeCountdownTask;
     private EndingCountdownTask endingCountdownTask;
-    private Player winner;
-    private Player loser;
+    private ArenaTeam winner;
+    private ArenaTeam loser;
     private boolean isAvailable;
     private final KitItemManager kitItemManager;
     private JPerPlayerScoreboard scoreboard;
 
-    public Arena(int id, ArenaType arenaType, LocalGameMap map, ArenaMode mode) {
+    public Arena(String id, ArenaType arenaType, LocalGameMap map, ArenaMode mode) {
         this.map = map;
         this.id = id;
         players = new HashSet<>();
         alivePlayers = new HashSet<>();
         spectators = new ArrayList<>();
         placedBlocks = new ArrayList<>();
-        redTeam = new ArenaTeam("Red", ChatColor.RED, map.getSPAWN_ONE(), map.getPORTAL_ONE(), mode);
-        blueTeam = new ArenaTeam("Blue", ChatColor.BLUE, map.getSPAWN_TWO(), map.getPORTAL_TWO(), mode);
+        redTeam = new ArenaTeam("Red", ChatColor.RED, map.getBLUE_SPAWN(), map.getRED_PORTAL(), mode);
+        blueTeam = new ArenaTeam("Blue", ChatColor.BLUE, map.getRED_SPAWN(), map.getBLUE_PORTAL(), mode);
         teams = new ArrayList<>();
         teams.add(redTeam);
         teams.add(blueTeam);
@@ -82,6 +80,7 @@ public class Arena {
         setState(GameState.IN_GAME);
         totalTimeCountdownTask.begin();
         sendMessage(ChatColor.GREEN + "Game started!");
+        ArenaRegistry.getPlayableArenas(getArenaType(), getArenaMode()).remove(this);
         this.scoreboard = ScoreboardManager.getScoreboard(this, getArenaType(), getArenaMode());
         for (Player player : players) {
             alivePlayers.add(player);
@@ -91,15 +90,22 @@ public class Arena {
             }
             scoreboard.addPlayer(player);
         }
+
+        for (Block block : map.getBLUE_PORTAL().blockList()){
+            block.setType(Material.ENDER_PORTAL);
+        }
+
+        for (Block block : map.getRED_PORTAL().blockList()){
+            block.setType(Material.ENDER_PORTAL);
+        }
     }
 
     public void reset() {
+        setState(GameState.END);
         for (Player player : players) {
-            player.teleport(ConfigManager.getLobbySpawn());
-            System.out.println("DEBUG: " + player.getName());
-            player.getInventory().clear();
+            removePlayer(player);
             for (Player p : Bukkit.getOnlinePlayers()) {
-                player.hidePlayer(p);
+                player.showPlayer(p);
             }
         }
         map.unload();
@@ -127,12 +133,17 @@ public class Arena {
         }
         ArenaRegistry.getPlayableArenas(getArenaType(), getArenaMode()).remove(this);
         ArenaRegistry.getActiveArenas(getArenaType(), getArenaMode()).remove(this);
-
     }
 
     public void sendMessage(String message) {
         for (Player player : players) {
             player.sendMessage(message);
+        }
+    }
+
+    public void  sendTitle(String title, String subTitle){
+        for(Player player : players){
+            TitleAPI.sendTitle(player, 20, 20, 20, title, subTitle);
         }
     }
 
@@ -142,6 +153,9 @@ public class Arena {
             return;
         }
         players.add(player);
+        if(player.getFireTicks() > 0){
+            player.setFireTicks(0);
+        }
         alivePlayers.add(player);
         teamManager.autoJoin(player);
         player.teleport(teamManager.getTeam(player).getSpawn().getRandomLocation());
@@ -151,6 +165,10 @@ public class Arena {
         kitItemManager.addKitItems(player.getInventory());
         kitItemManager.suit(player);
         sendMessage(MessageUtil.getPrefix() + " §3" + player.getPlayer().getName() + " §7joined the game! §3(" + players.size() + ")");
+
+        if(Queue.isPlayerInQueue(player)){
+            Queue.getPlayerQueue(player).removePlayer(player);
+        }
         for (Player p : Bukkit.getOnlinePlayers()) {
             if(!players.contains(p)){
                 player.hidePlayer(p);
@@ -179,12 +197,13 @@ public class Arena {
         }
         teamManager.getTeam(player).removePlayer(player);
         players.remove(player);
+        player.setLevel(0);
         player.getInventory().clear();
         Game.teleportToLobby(player);
 
-        if (players.size() == 0) {
+        if (players.size() == 0 && !getState().equals(GameState.END)) {
             reset();
-        } else if (players.size() == arenaMode.getPlayersInTeam()) {
+        } else if (players.size() == arenaMode.getPlayersInTeam() && !getState().equals(GameState.WINNER_ANNOUNCE) && !getState().equals(GameState.END)) {
             for(Player p : players) {
                 if (teamManager.isLastTeam(teamManager.getTeam(p))) {
                     setState(GameState.WINNER_ANNOUNCE);
@@ -196,7 +215,10 @@ public class Arena {
     }
 
     public void killPlayer(Player player, Player killer, ArenaType mode) {
-        if (!mode.equals(ArenaType.THE_BRIDGE)) {
+        if(player.getFireTicks() > 0){
+            player.setFireTicks(0);
+        }
+        if (mode.equals(ArenaType.BUILD_UHC) || mode.equals(ArenaType.CLASSIC_DUELS)) {
             if(killer == null){
                 alivePlayers.remove(player);
                 teamManager.getTeam(player).getAlivePlayers().remove(player);
@@ -217,6 +239,22 @@ public class Arena {
             if(teamManager.isLastTeam(teamManager.getTeam(killer))){
                 setState(GameState.WINNER_ANNOUNCE);
             }
+        }else if(mode.equals(ArenaType.THE_BRIDGE)){
+            if(killer == null){
+                player.getInventory().clear();
+                kitItemManager.addKitItems(player.getInventory());
+                sendMessage("§3" + player.getName() + "§7 died");
+                player.teleport(teamManager.getTeam(player).getSpawn().getRandomLocation());
+                player.setHealth(20);
+                return;
+            }
+            player.getInventory().clear();
+            kitItemManager.addKitItems(player.getInventory());
+            sendMessage("§3" + player.getName() + "§7 was killed by §3" + killer.getName());
+            player.teleport(teamManager.getTeam(player).getSpawn().getRandomLocation());
+            game.addKill(killer);
+            player.setHealth(20);
+
         }
     }
 
@@ -224,6 +262,7 @@ public class Arena {
         if (!spectators.contains(player)) {
             spectators.add(player);
             player.getPlayer().teleport(map.getSpecSpawn());
+            player.sendMessage(MessageUtil.getPrefix() + " §7You are now spectating");
             for (Player p : players) {
                 p.hidePlayer(player);
             }
@@ -251,7 +290,7 @@ public class Arena {
         this.isAvailable = available;
     }
 
-    public int getID() {
+    public String  getID() {
         return id;
     }
 
@@ -268,15 +307,12 @@ public class Arena {
         this.state = state;
         switch (state) {
             case IDLE:
-                setAvailable(true);
-                break;
             case WAITING_FOR_OPPONENT:
                 setAvailable(true);
                 break;
             case PREGAME:
-                setAvailable(false);
-                break;
             case IN_GAME:
+            case END:
                 setAvailable(false);
                 break;
             case WINNER_ANNOUNCE:
@@ -294,14 +330,20 @@ public class Arena {
                     nMeta.setLore(lore);
                     player.getInventory().setItem(4, next);
                 }
-                for (Player player : alivePlayers) {
-                    this.winner = player;
-                    TitleAPI.sendTitle(winner, 30, 45, 30, ChatColor.YELLOW + "Victory!");
+                if(arenaType.equals(ArenaType.BUILD_UHC) || arenaType.equals(ArenaType.CLASSIC_DUELS)) {
+                    for (ArenaTeam team : getTeams()) {
+                        if (teamManager.isLastTeam(team)) {
+                            for (Player player : team.getMembers()) {
+                                TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.YELLOW + "Victory!");
+                            }
+                        }
+                    }
+                }else if(arenaType.equals(ArenaType.THE_BRIDGE)){
+                    for(Player player : winner.getMembers()){
+                        TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.YELLOW + "Victory!");
+                    }
                 }
-                Bukkit.broadcastMessage(MessageUtil.getPrefix() + " §b" + winner.getName() + " §7won on arena §3" + map.getName() + "§7.");
-                break;
-            case END:
-                setAvailable(false);
+                //Bukkit.broadcastMessage(MessageUtil.getPrefix() + " §b" + winner.getName() + " §7won on arena §3" + map.getName() + "§7.");
                 break;
 
         }
@@ -342,19 +384,19 @@ public class Arena {
         return alivePlayers;
     }
 
-    public Player getWinner() {
+    public ArenaTeam getWinner() {
         return winner;
     }
 
-    public void setWinner(Player winner) {
+    public void setWinner(ArenaTeam winner) {
         this.winner = winner;
     }
 
-    public Player getLoser() {
+    public ArenaTeam getLoser() {
         return loser;
     }
 
-    public void setLoser(Player loser) {
+    public void setLoser(ArenaTeam loser) {
         this.loser = loser;
     }
 

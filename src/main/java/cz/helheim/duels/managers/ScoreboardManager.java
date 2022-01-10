@@ -69,17 +69,6 @@ public class ScoreboardManager {
         placeholders.put("%map%", arena.getMap().getName());
         placeholders.put("%builder%", arena.getMap().getBuilder());
         placeholders.put("%time%", arena.getTotalTimeCountdownTask().formatTime());
-        placeholders.put("%opponent_1%", arena.getOpponentsName(pl, 0));
-        if(arena.getOpponentsName(pl, 1) != null) {
-            placeholders.put("%opponent_2%", arena.getOpponentsName(pl, 1));
-        }
-        if(arena.getOpponentsName(pl, 2) != null) {
-            placeholders.put("%opponent_3%", arena.getOpponentsName(pl, 2));
-        }
-        if(arena.getOpponentsName(pl, 3) != null) {
-            placeholders.put("%opponent_4%", arena.getOpponentsName(pl, 3));
-        }
-
         placeholders.put("%id%", String.valueOf(arena.getID()));
         placeholders.put("%state%", arena.getState().getFormattedName());
         placeholders.put("%arena_type%", arena.getArenaType().getFormattedName());
