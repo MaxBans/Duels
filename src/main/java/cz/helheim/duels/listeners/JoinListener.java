@@ -1,4 +1,4 @@
-package cz.helheim.duels.Listeners;
+package cz.helheim.duels.listeners;
 
 import cz.helheim.duels.managers.ConfigManager;
 import cz.helheim.duels.queue.Queue;

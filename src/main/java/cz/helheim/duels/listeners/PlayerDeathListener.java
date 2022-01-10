@@ -1,8 +1,7 @@
-package cz.helheim.duels.Listeners;
+package cz.helheim.duels.listeners;
 
 import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.arena.ArenaRegistry;
-import cz.helheim.duels.arena.ArenaType;
 import cz.helheim.duels.managers.ConfigManager;
 import cz.helheim.duels.state.GameState;
 import org.bukkit.Bukkit;

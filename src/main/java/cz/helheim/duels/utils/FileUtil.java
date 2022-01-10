@@ -73,7 +73,7 @@ public class FileUtil {
         classicMapsFolder = new File(gameMapsFolder, "ClassicDuels");
         buildUHCFolder = new File(gameMapsFolder, "BuildUHC");
         theBridgeFolder = new File(gameMapsFolder, "TheBridge");
-        menuFolder = new File(Duels.getInstance().getDataFolder(), "Menus");
+        menuFolder = new File(Duels.getInstance().getDataFolder(), "menus");
 
         if(!gameMapsFolder.exists()){
             gameMapsFolder.mkdirs();

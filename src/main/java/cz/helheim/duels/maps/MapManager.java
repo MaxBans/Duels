@@ -16,8 +16,7 @@ import java.util.Random;
 import java.util.UUID;
 
 public class MapManager {
-    private static final List<LocalGameMap> maps = new ArrayList<>();
-
+    private final List<LocalGameMap> maps = new ArrayList<>();
 
     public MapManager(FileConfiguration mapConfig, ArenaType type){
         ConfigurationSection mapSection = mapConfig.getConfigurationSection(type.getFormattedName() + ".maps");

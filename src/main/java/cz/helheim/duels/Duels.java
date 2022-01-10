@@ -1,12 +1,10 @@
 package cz.helheim.duels;
 
-import cz.helheim.duels.Listeners.GameListener;
-import cz.helheim.duels.Listeners.JoinListener;
-import cz.helheim.duels.Listeners.PlayerDeathListener;
+import cz.helheim.duels.listeners.GameListener;
+import cz.helheim.duels.listeners.JoinListener;
+import cz.helheim.duels.listeners.PlayerDeathListener;
 import cz.helheim.duels.commands.DuelCommand;
 import cz.helheim.duels.commands.QueueCommand;
-import cz.helheim.duels.game.Game;
-import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.maps.MapManager;
 import cz.helheim.duels.utils.FileUtil;
 import org.bukkit.Bukkit;

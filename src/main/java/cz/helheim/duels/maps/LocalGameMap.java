@@ -17,11 +17,6 @@ public class LocalGameMap {
     private final ArenaType arenaType;
     private final ArenaMode arenaMode;
     private final String builder;
-    private Cuboid BLUE_SPAWN;
-    private Cuboid RED_SPAWN;
-    private Location specSpawn;
-    private Cuboid BLUE_PORTAL;
-    private Cuboid RED_PORTAL;
     private final ConfigurationSection section;
     private final File sourceWorldFolder;
     private File activeWorldFolder;
@@ -107,30 +102,26 @@ public class LocalGameMap {
 
     public Cuboid getBLUE_SPAWN() {
         if(!isLoaded()) load();
-        this.BLUE_SPAWN = new Cuboid(MapManager.locationFromString(section.getStringList("BLUE_SPAWN").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("BLUE_SPAWN").get(1), getBukkitWorld()));
-        return BLUE_SPAWN;
+        return new Cuboid(MapManager.locationFromString(section.getStringList("BLUE_SPAWN").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("BLUE_SPAWN").get(1), getBukkitWorld()));
     }
 
     public Cuboid getRED_SPAWN() {
         if(!isLoaded()) load();
-        this.RED_SPAWN = new Cuboid(MapManager.locationFromString(section.getStringList("RED_SPAWN").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("RED_SPAWN").get(1), getBukkitWorld()));
-        return RED_SPAWN;
+        return new Cuboid(MapManager.locationFromString(section.getStringList("RED_SPAWN").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("RED_SPAWN").get(1), getBukkitWorld()));
     }
 
     public Cuboid getBLUE_PORTAL(){
         if(!getArenaType().equals(ArenaType.THE_BRIDGE)) return new Cuboid(new Location(bukkitWorld, 0,0,0), new Location(bukkitWorld, 2,2,2));
 
         if(!isLoaded()) load();
-        this.BLUE_PORTAL = new Cuboid(MapManager.locationFromString(section.getStringList("BLUE_PORTAL").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("BLUE_PORTAL").get(1), getBukkitWorld()));
-        return BLUE_PORTAL;
+        return new Cuboid(MapManager.locationFromString(section.getStringList("BLUE_PORTAL").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("BLUE_PORTAL").get(1), getBukkitWorld()));
     }
 
     public Cuboid getRED_PORTAL(){
         if(!getArenaType().equals(ArenaType.THE_BRIDGE)) return new Cuboid(new Location(bukkitWorld, 0,0,0), new Location(bukkitWorld, 2,2,2));
 
         if(!isLoaded()) load();
-        this.RED_PORTAL = new Cuboid(MapManager.locationFromString(section.getStringList("RED_PORTAL").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("RED_PORTAL").get(1), getBukkitWorld()));
-        return RED_PORTAL;
+        return new Cuboid(MapManager.locationFromString(section.getStringList("RED_PORTAL").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("RED_PORTAL").get(1), getBukkitWorld()));
     }
 
     public ArenaType getArenaType() {
@@ -138,8 +129,7 @@ public class LocalGameMap {
     }
 
     public Location getSpecSpawn() {
-        this.specSpawn = MapManager.locationFromString(section.getString("SPECTATOR_SPAWN"), bukkitWorld);
-        return specSpawn;
+        return MapManager.locationFromString(section.getString("SPECTATOR_SPAWN"), bukkitWorld);
     }
 
     public ArenaMode getArenaMode() {

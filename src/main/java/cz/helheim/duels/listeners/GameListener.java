@@ -1,14 +1,11 @@
-package cz.helheim.duels.Listeners;
+package cz.helheim.duels.listeners;
 
-import com.connorlinfoot.titleapi.TitleAPI;
 import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.arena.ArenaMode;
 import cz.helheim.duels.arena.ArenaRegistry;
 import cz.helheim.duels.arena.ArenaType;
-import cz.helheim.duels.arena.team.TeamManager;
 import cz.helheim.duels.queue.Queue;
 import cz.helheim.duels.state.GameState;
-import cz.helheim.duels.utils.Cuboid;
 import cz.helheim.duels.utils.MessageUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
