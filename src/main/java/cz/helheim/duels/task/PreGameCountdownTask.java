@@ -37,7 +37,9 @@ public class PreGameCountdownTask extends BukkitRunnable {
             arena.start();
             for(Player player : arena.getPlayers()){
                 player.setLevel(timeLeft);
+                TitleAPI.sendTitle(player, 10, 15, 10, ChatColor.DARK_AQUA + arena.getArenaType().getFormattedName(), "§7Fight!");
             }
+
             return;
         }
         for (Player player : arena.getPlayers()) {

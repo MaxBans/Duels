@@ -2,6 +2,7 @@ package cz.helheim.duels.listeners;
 
 import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.arena.ArenaRegistry;
+import cz.helheim.duels.arena.ArenaType;
 import cz.helheim.duels.managers.ConfigManager;
 import cz.helheim.duels.state.GameState;
 import org.bukkit.Bukkit;
@@ -107,8 +108,8 @@ public class PlayerDeathListener implements Listener {
                                 if (lastHitUuid.containsKey(p.getUniqueId())) {
                                     UUID killedID = lastHitUuid.get(p.getUniqueId());
                                     Player killer = Bukkit.getPlayer(killedID);
-                                    e.setCancelled(true);
                                     arena.killPlayer(p, killer, arena.getArenaType());
+                                    e.setCancelled(true);
 
                                 } else {
                                     arena.killPlayer(p, null, arena.getArenaType());
@@ -161,6 +162,12 @@ public class PlayerDeathListener implements Listener {
                 Arena arena = ArenaRegistry.getArena(player);
                 if (arena.isSpectator(player)) {
                     e.setCancelled(true);
+                }
+
+                if(arena.getArenaType() == ArenaType.THE_BRIDGE){
+                    if(e.getCause().equals(EntityDamageEvent.DamageCause.FALL)){
+                        e.setCancelled(true);
+                    }
                 }
             }
         }
