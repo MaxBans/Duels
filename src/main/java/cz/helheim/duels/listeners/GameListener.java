@@ -4,12 +4,14 @@ import cz.helheim.duels.arena.Arena;
 import cz.helheim.duels.arena.ArenaMode;
 import cz.helheim.duels.arena.ArenaRegistry;
 import cz.helheim.duels.arena.ArenaType;
+import cz.helheim.duels.arena.team.ArenaTeam;
 import cz.helheim.duels.queue.Queue;
 import cz.helheim.duels.state.GameState;
 import cz.helheim.duels.utils.MessageUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -42,7 +44,7 @@ public class GameListener implements Listener {
         if(ArenaRegistry.isInArena(event.getPlayer())){
             Arena arena = ArenaRegistry.getArena(event.getPlayer());
             if(arena.getArenaType().equals(ArenaType.THE_BRIDGE)){
-                if(arena.getMap().getRED_PORTAL().isIn(player)){
+                if(arena.getRedBase().getPortal().isIn(player)){
                     //IF PLAYER JUMPS TO RED PORTAL
                     if(arena.getTeamManager().getTeam(player).equals(arena.getBlueTeam())){
                         //PLAYER JUMPED TO ENEMY PORTAL
@@ -50,7 +52,7 @@ public class GameListener implements Listener {
                     }else{
                         player.sendMessage(MessageUtil.getPrefix() + " §7You jumped to your own portal. Enjoy death :)");
                     }
-                }else if(arena.getMap().getBLUE_PORTAL().isIn(player)){
+                }else if(arena.getBlueBase().getPortal().isIn(player)){
                     if(arena.getTeamManager().getTeam(player).equals(arena.getRedTeam())){
                         //PLAYER JUMPED TO ENEMY PORTAL
                         arena.getGame().score(arena.getRedTeam(), player);
@@ -61,6 +63,35 @@ public class GameListener implements Listener {
             }
         }
     }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBuildInBase(BlockPlaceEvent e){
+       Player player = e.getPlayer();
+       if(ArenaRegistry.isInArena(player)){
+           Arena arena = ArenaRegistry.getArena(player);
+           if(!(arena.getArenaType() == ArenaType.THE_BRIDGE)){
+               return;
+           }
+           if(arena.getBlueBase().getBaseCuboid().isIn(e.getBlock().getLocation())){
+               e.setCancelled(true);
+           }else e.setCancelled(arena.getRedBase().getBaseCuboid().isIn(e.getBlock().getLocation()));
+       }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBreakInBase(BlockBreakEvent e){
+        Player player = e.getPlayer();
+        if(ArenaRegistry.isInArena(player)) {
+            Arena arena = ArenaRegistry.getArena(player);
+            if (!(arena.getArenaType() == ArenaType.THE_BRIDGE)) {
+                return;
+            }
+            if(arena.getBlueBase().getBaseCuboid().isIn(e.getBlock().getLocation())){
+                e.setCancelled(true);
+            }else e.setCancelled(arena.getRedBase().getBaseCuboid().isIn(e.getBlock().getLocation()));
+        }
+    }
+
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent e) {

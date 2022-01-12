@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class PreGameCountdownTask extends BukkitRunnable {
     private final Arena arena;
-    private int timeLeft = 10;
+    private byte timeLeft = 10;
     public boolean isRunning = false;
 
     public PreGameCountdownTask(Arena arena) {

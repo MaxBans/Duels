@@ -10,6 +10,7 @@ import cz.helheim.duels.managers.ScoreboardManager;
 import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.queue.Queue;
 import cz.helheim.duels.state.GameState;
+import cz.helheim.duels.task.CageOpenCountdown;
 import cz.helheim.duels.task.EndingCountdownTask;
 import cz.helheim.duels.task.PreGameCountdownTask;
 import cz.helheim.duels.task.TotalTimeCountdownTask;
@@ -36,17 +37,20 @@ public class Arena {
     private final LocalGameMap map;
     private final ArenaTeam redTeam;
     private final ArenaTeam blueTeam;
+    private final ArenaBase redBase;
+    private final ArenaBase blueBase;
     private final List<ArenaTeam> teams;
     private final TeamManager teamManager;
+    private final KitItemManager kitItemManager;
     private GameState state;
     private Game game;
     private PreGameCountdownTask preGameCountdownTask;
     private TotalTimeCountdownTask totalTimeCountdownTask;
+    private CageOpenCountdown cageOpenCountdown;
     private EndingCountdownTask endingCountdownTask;
     private ArenaTeam winner;
     private ArenaTeam loser;
     private boolean isAvailable;
-    private final KitItemManager kitItemManager;
     private JPerPlayerScoreboard scoreboard;
 
     public Arena(String id, ArenaType arenaType, LocalGameMap map, ArenaMode mode) {
@@ -56,8 +60,10 @@ public class Arena {
         alivePlayers = new HashSet<>();
         spectators = new ArrayList<>();
         placedBlocks = new ArrayList<>();
-        redTeam = new ArenaTeam("Red", ChatColor.RED, map.getBLUE_SPAWN(), map.getRED_PORTAL(), mode);
-        blueTeam = new ArenaTeam("Blue", ChatColor.BLUE, map.getRED_SPAWN(), map.getBLUE_PORTAL(), mode);
+        redBase = new ArenaBase(map.getRedBase(), map.getRedSpawnPoint(), map.getRedRespawnPoint(), map.getRedPortal(), map.getRedCage(), map.getRedCageFloor());
+        blueBase = new ArenaBase(map.getBlueBase(), map.getBlueSpawnPoint(), map.getBlueRespawnPoint(), map.getBluePortal(), map.getBlueCage(), map.getBlueCageFloor());
+        redTeam = new ArenaTeam("Red", ChatColor.RED, mode, redBase);
+        blueTeam = new ArenaTeam("Blue", ChatColor.BLUE, mode, blueBase);
         teams = new ArrayList<>();
         teams.add(redTeam);
         teams.add(blueTeam);
@@ -69,6 +75,7 @@ public class Arena {
         this.isAvailable = true;
         this.preGameCountdownTask = new PreGameCountdownTask(this);
         this.totalTimeCountdownTask = new TotalTimeCountdownTask(this);
+        this.cageOpenCountdown = new CageOpenCountdown(this);
         this.endingCountdownTask = new EndingCountdownTask(this);
         this.game = new Game(this);
         teamManager = new TeamManager(this);
@@ -79,7 +86,6 @@ public class Arena {
     public void start() {
         setState(GameState.IN_GAME);
         totalTimeCountdownTask.begin();
-        sendMessage(ChatColor.GREEN + "Game started!");
         ArenaRegistry.getPlayableArenas(getArenaType(), getArenaMode()).remove(this);
         this.scoreboard = ScoreboardManager.getScoreboard(this, getArenaType(), getArenaMode());
         for (Player player : players) {
@@ -91,23 +97,30 @@ public class Arena {
             scoreboard.addPlayer(player);
         }
 
-        for (Block block : map.getBLUE_PORTAL().blockList()){
+        for (Block block : blueBase.getPortal().blockList()){
             block.setType(Material.ENDER_PORTAL);
         }
 
-        for (Block block : map.getRED_PORTAL().blockList()){
+        for (Block block : redBase.getPortal().blockList()){
             block.setType(Material.ENDER_PORTAL);
+        }
+
+        if(arenaType == ArenaType.THE_BRIDGE) {
+            for (ArenaTeam team : getTeams()) {
+                team.getBase().getCageFloor().reset();
+            }
         }
     }
 
     public void reset() {
         setState(GameState.END);
         for (Player player : players) {
-            removePlayer(player);
             for (Player p : Bukkit.getOnlinePlayers()) {
                 player.showPlayer(p);
             }
         }
+
+        resetPlayers();
         map.unload();
         teams.clear();
         state = GameState.IDLE;
@@ -119,12 +132,18 @@ public class Arena {
         if(totalTimeCountdownTask.isRunning) {
             totalTimeCountdownTask.cancel();
         }
+
+        if(cageOpenCountdown.isRunning){
+            cageOpenCountdown.cancel();
+        }
+
         if (endingCountdownTask.isRunning) {
             endingCountdownTask.cancel();
         }
         preGameCountdownTask = new PreGameCountdownTask(this);
         totalTimeCountdownTask = new TotalTimeCountdownTask(this);
         endingCountdownTask = new EndingCountdownTask(this);
+        cageOpenCountdown = new CageOpenCountdown(this);
         alivePlayers.clear();
         game = new Game(this);
         this.isAvailable = true;
@@ -141,7 +160,7 @@ public class Arena {
         }
     }
 
-    public void  sendTitle(String title, String subTitle){
+    public void sendTitle(String title, String subTitle){
         for(Player player : players){
             TitleAPI.sendTitle(player, 20, 20, 20, title, subTitle);
         }
@@ -158,7 +177,7 @@ public class Arena {
         }
         alivePlayers.add(player);
         teamManager.autoJoin(player);
-        player.teleport(teamManager.getTeam(player).getSpawn().getRandomLocation());
+        player.teleport(teamManager.getTeam(player).getBase().getSpawnPoint().getRandomLocation());
         player.setLevel(0);
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().clear();
@@ -183,11 +202,33 @@ public class Arena {
         }
     }
 
-    public String getOpponentsName(Player player, int i){
-        if(getOpponents(player).get(i) == null){
-            return null;
+    public List<String> getOpponentsName(Player player){
+       List<String> names = new ArrayList<>();
+       for(Player p : getOpponents(player)){
+           if(!alivePlayers.contains(p)){
+               names.add(ChatColor.GRAY + p.getName());
+           }else {
+               names.add(p.getName());
+           }
+       }
+       return names;
+    }
+
+    public List<Integer> getOpponentsHP(Player player){
+        List<Integer> hps = new ArrayList<>();
+        for(Player p : getOpponents(player)){
+            hps.add((int) p.getHealth());
         }
-        return getOpponents(player).get(i).getName();
+        return hps;
+    }
+
+    public void resetPlayers(){
+        for(Player player : players){
+            teamManager.getTeam(player).removePlayer(player);
+            player.setLevel(0);
+            player.getInventory().clear();
+            Game.teleportToLobby(player);
+        }
     }
 
     public void removePlayer(Player player) {
@@ -244,14 +285,14 @@ public class Arena {
                 player.getInventory().clear();
                 kitItemManager.addKitItems(player.getInventory());
                 sendMessage("§3" + player.getName() + "§7 died");
-                player.teleport(teamManager.getTeam(player).getSpawn().getRandomLocation());
+                player.teleport(teamManager.getTeam(player).getBase().getRespawnPoint().getRandomLocation());
                 player.setHealth(20);
                 return;
             }
             player.getInventory().clear();
             kitItemManager.addKitItems(player.getInventory());
             sendMessage("§3" + player.getName() + "§7 was killed by §3" + killer.getName());
-            player.teleport(teamManager.getTeam(player).getSpawn().getRandomLocation());
+            player.teleport(teamManager.getTeam(player).getBase().getRespawnPoint().getRandomLocation());
             game.addKill(killer);
             player.setHealth(20);
 
@@ -335,6 +376,10 @@ public class Arena {
                         if (teamManager.isLastTeam(team)) {
                             for (Player player : team.getMembers()) {
                                 TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.YELLOW + "Victory!");
+                            }
+                        }else{
+                            for(Player player : team.getMembers()){
+                                TitleAPI.sendTitle(player, 30, 45, 30, "§c§You Lost!");
                             }
                         }
                     }
@@ -434,5 +479,17 @@ public class Arena {
 
     public KitItemManager getKitItemManager() {
         return kitItemManager;
+    }
+
+    public ArenaBase getRedBase() {
+        return redBase;
+    }
+
+    public ArenaBase getBlueBase() {
+        return blueBase;
+    }
+
+    public CageOpenCountdown getCageOpenCountdown() {
+        return cageOpenCountdown;
     }
 }

@@ -12,7 +12,7 @@ import java.util.UUID;
 public class EndingCountdownTask extends BukkitRunnable {
 
     private final Arena arena;
-    private int timeLeft = 15;
+    private byte timeLeft = 15;
     public boolean isRunning = false;
 
     public EndingCountdownTask(Arena arena) {

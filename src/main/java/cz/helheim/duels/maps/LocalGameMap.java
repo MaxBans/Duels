@@ -2,6 +2,7 @@ package cz.helheim.duels.maps;
 
 import cz.helheim.duels.arena.ArenaMode;
 import cz.helheim.duels.arena.ArenaType;
+import cz.helheim.duels.managers.LocationManager;
 import cz.helheim.duels.utils.Cuboid;
 import cz.helheim.duels.utils.FileUtil;
 import org.bukkit.*;
@@ -46,7 +47,7 @@ public class LocalGameMap {
         try{
             FileUtil.copy(sourceWorldFolder, activeWorldFolder);
         }catch (IOException e){
-            Bukkit.getLogger().severe("Failed to laod Map from source folder " + sourceWorldFolder.getName());
+            Bukkit.getLogger().severe("Failed to load Map from source folder " + sourceWorldFolder.getName());
             e.printStackTrace();
             return false;
         }
@@ -82,9 +83,6 @@ public class LocalGameMap {
         return load();
     }
     public boolean isLoaded(){
-        if(bukkitWorld == null){
-            System.out.println("DEBUG: Error world is null");
-        }
         return this.bukkitWorld != null;
     }
 
@@ -100,36 +98,73 @@ public class LocalGameMap {
         return bukkitWorld;
     }
 
-    public Cuboid getBLUE_SPAWN() {
+    public Cuboid getBlueSpawnPoint() {
         if(!isLoaded()) load();
-        return new Cuboid(MapManager.locationFromString(section.getStringList("BLUE_SPAWN").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("BLUE_SPAWN").get(1), getBukkitWorld()));
+        return LocationManager.getBlue("spawn", bukkitWorld, section);
     }
 
-    public Cuboid getRED_SPAWN() {
+    public Cuboid getRedSpawnPoint() {
         if(!isLoaded()) load();
-        return new Cuboid(MapManager.locationFromString(section.getStringList("RED_SPAWN").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("RED_SPAWN").get(1), getBukkitWorld()));
+        return LocationManager.getRed("spawn", bukkitWorld, section);
     }
 
-    public Cuboid getBLUE_PORTAL(){
-        if(!getArenaType().equals(ArenaType.THE_BRIDGE)) return new Cuboid(new Location(bukkitWorld, 0,0,0), new Location(bukkitWorld, 2,2,2));
-
+    public Cuboid getBlueCage(){
         if(!isLoaded()) load();
-        return new Cuboid(MapManager.locationFromString(section.getStringList("BLUE_PORTAL").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("BLUE_PORTAL").get(1), getBukkitWorld()));
+        return LocationManager.getBlue("cage", bukkitWorld, section);
     }
 
-    public Cuboid getRED_PORTAL(){
-        if(!getArenaType().equals(ArenaType.THE_BRIDGE)) return new Cuboid(new Location(bukkitWorld, 0,0,0), new Location(bukkitWorld, 2,2,2));
-
+    public Cuboid getRedCage(){
         if(!isLoaded()) load();
-        return new Cuboid(MapManager.locationFromString(section.getStringList("RED_PORTAL").get(0), getBukkitWorld()), MapManager.locationFromString(section.getStringList("RED_PORTAL").get(1), getBukkitWorld()));
+        return LocationManager.getRed("cage", bukkitWorld, section);
     }
+
+    public Cuboid getBlueCageFloor(){
+        if(!isLoaded()) load();
+        return LocationManager.getBlue("floor", bukkitWorld, section);
+    }
+
+    public Cuboid getRedCageFloor(){
+        if(!isLoaded()) load();
+        return LocationManager.getRed("floor", bukkitWorld, section);
+    }
+
+    public Cuboid getBlueRespawnPoint(){
+        if(!isLoaded()) load();
+        return LocationManager.getBlue("respawn", bukkitWorld, section);
+    }
+
+    public Cuboid getRedRespawnPoint(){
+        if(!isLoaded()) load();
+        return LocationManager.getRed("respawn", bukkitWorld, section);
+    }
+
+    public Cuboid getBluePortal(){
+        if(!isLoaded()) load();
+        return LocationManager.getBlue("portal", bukkitWorld, section);
+    }
+
+    public Cuboid getRedPortal(){
+        if(!isLoaded()) load();
+        return LocationManager.getRed("portal", bukkitWorld, section);
+    }
+
+    public Cuboid getBlueBase(){
+        if(!isLoaded()) load();
+        return LocationManager.getBlue("base", bukkitWorld, section);
+    }
+
+    public Cuboid getRedBase(){
+        if(!isLoaded()) load();
+        return LocationManager.getRed("base", bukkitWorld, section);
+    }
+
 
     public ArenaType getArenaType() {
         return arenaType;
     }
 
     public Location getSpecSpawn() {
-        return MapManager.locationFromString(section.getString("SPECTATOR_SPAWN"), bukkitWorld);
+        return MapManager.locationFromString(section.getString("spectator_location"), bukkitWorld);
     }
 
     public ArenaMode getArenaMode() {

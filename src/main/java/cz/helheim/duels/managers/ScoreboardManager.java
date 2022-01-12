@@ -10,33 +10,33 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ScoreboardManager {
     private static JPerPlayerScoreboard scoreboard;
-    private static Map<String, String> placeholders;
+    private static Map<String, Object> placeholders;
 
-    public static List<String> replacePlaceholders(List<String> list, Map<String, String> map) {
+    public static List<String> replacePlaceholders(List<String> list, Map<String, Object> map) {
         List<String> replaced = new ArrayList<>();
-        for (String key : list) {
-            boolean contained = false;
-            for (String mapKey : map.keySet()) {
-                if (key.contains(mapKey)) {
-                    String replacement = key.replace(mapKey, String.valueOf(map.get(mapKey)));
-                    replaced.add(replacement);
-                    contained = true;
+
+        skip:
+        for(String s : list){
+            for(Map.Entry<String, Object> entry : map.entrySet()){
+                String key = entry.getKey();
+                Object value = entry.getValue();
+
+                if (s.contains(key) && value instanceof Collection) {
+                    replaced.addAll((Collection<String>) value);
+                    continue skip;
+                } else {
+                    s = s.replaceAll(key, value.toString());
                 }
             }
-            if (!contained) {
-                replaced.add(key);
-            }
+            replaced.add(s);
         }
-
         return replaced;
     }
+
 
     public static String formatPoints(ArenaTeam team, Integer points) {
         String format = ChatColor.DARK_GRAY + "● ● ● ● ●";
@@ -70,6 +70,8 @@ public class ScoreboardManager {
         placeholders.put("%builder%", arena.getMap().getBuilder());
         placeholders.put("%time%", arena.getTotalTimeCountdownTask().formatTime());
         placeholders.put("%id%", String.valueOf(arena.getID()));
+        placeholders.put("%opponents%", arena.getOpponentsName(pl));
+        placeholders.put("%hp%", arena.getOpponentsHP(pl));
         placeholders.put("%state%", arena.getState().getFormattedName());
         placeholders.put("%arena_type%", arena.getArenaType().getFormattedName());
         placeholders.put("%arena_mode%", arena.getArenaMode().getName());
@@ -80,6 +82,7 @@ public class ScoreboardManager {
         //placeholders.put("%arrows_amount%", String.valueOf(InventoryManager.getAmountOf(Material.ARROW, pl.getInventory())));
         placeholders.put("%blue_points%", formatPoints(arena.getBlueTeam(), arena.getGame().getPoints().get(arena.getBlueTeam())));
         placeholders.put("%red_points%", formatPoints(arena.getRedTeam(), arena.getGame().getPoints().get(arena.getRedTeam())));
+
         List<String> replaced = replacePlaceholders(list, placeholders);
         return replaced;
 
@@ -94,7 +97,7 @@ public class ScoreboardManager {
         return scoreboard;
     }
 
-    public Map<String, String> getPlaceholders() {
+    public Map<String, Object> getPlaceholders() {
         return placeholders;
     }
 

@@ -31,6 +31,8 @@ public class TeamManager {
             redTeam.addPlayer(player);
         }else if(redTeam.getMembers().size() > blueTeam.getMembers().size()){
             blueTeam.addPlayer(player);
+        }else if(redTeam.getMembers().size() == blueTeam.getMembers().size()){
+            redTeam.addPlayer(player);
         }
     }
 

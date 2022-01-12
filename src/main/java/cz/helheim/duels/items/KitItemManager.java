@@ -12,8 +12,8 @@ import java.util.List;
 
 public class KitItemManager {
 
-    private static final List<KitItem> kitItems = new ArrayList<>();
-    private static final List<ArmorItem> armorItems = new ArrayList<>();
+    private final List<KitItem> kitItems = new ArrayList<>();
+    private final List<ArmorItem> armorItems = new ArrayList<>();
 
     public KitItemManager(FileConfiguration kitConfig, ArenaType type){
         ConfigurationSection kitSection = kitConfig.getConfigurationSection(type.getFormattedName());

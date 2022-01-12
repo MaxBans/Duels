@@ -10,7 +10,11 @@ import cz.helheim.duels.state.GameState;
 import cz.helheim.duels.utils.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Dye;
 import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
@@ -102,10 +106,7 @@ public class Game {
     public void score(ArenaTeam team, Player scorer){
         getGoals().put(scorer.getUniqueId(), getGoals().get(scorer.getUniqueId()) + 1);
         getPoints().put(team, getPoints().get(team) + 1);
-        for(Player pl : arena.getPlayers()){
-            pl.teleport(arena.getTeamManager().getTeam(pl).getSpawn().getRandomLocation());
-        }
-        arena.sendMessage(MessageUtil.getPrefix() + team.getColor() + "" + scorer.getName() + " §7scored a goal!");
+        arena.sendMessage(MessageUtil.getPrefix() + team.getColor() + " " + scorer.getName() + " §7scored a goal!");
         arena.sendTitle(team.getColor() + "§l" + scorer.getName() + " scored!", "§7" + getPoints().get(arena.getRedTeam()) + " : " +  getPoints().get(arena.getBlueTeam()));
         scorer.getInventory().clear();
         arena.getKitItemManager().addKitItems(scorer.getInventory());
@@ -113,6 +114,16 @@ public class Game {
             arena.setWinner(team);
             arena.setState(GameState.WINNER_ANNOUNCE);
         }
+
+
+        for(Block block : arena.getTeamManager().getTeam(scorer).getBase().getCageFloor().blockList()){
+            block.setType(Material.STAINED_GLASS);
+        }
+        for(Player pl : arena.getPlayers()){
+            pl.teleport(arena.getTeamManager().getTeam(pl).getBase().getSpawnPoint().getRandomLocation());
+        }
+        //START CAGE OPEN TIMER
+        arena.getCageOpenCountdown().begin();
     }
 
 

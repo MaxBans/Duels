@@ -1,6 +1,7 @@
 package cz.helheim.duels.utils;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -109,5 +110,11 @@ public class Cuboid {
     public boolean isInWithMarge(final Location loc, final double marge) {
         return loc.getWorld() == this.world && loc.getX() >= this.xMinCentered - marge && loc.getX() <= this.xMaxCentered + marge && loc.getY() >= this.yMinCentered - marge && loc
                 .getY() <= this.yMaxCentered + marge && loc.getZ() >= this.zMinCentered - marge && loc.getZ() <= this.zMaxCentered + marge;
+    }
+
+    public void reset(){
+        for(Block block : blockList()){
+            block.setType(Material.AIR);
+        }
     }
 }

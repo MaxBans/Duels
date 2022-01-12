@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class TotalTimeCountdownTask extends BukkitRunnable {
 
     private final Arena arena;
-    private int timeLeft = 600;
+    private short timeLeft = 600;
     public boolean isRunning = false;
 
     public TotalTimeCountdownTask(Arena arena) {

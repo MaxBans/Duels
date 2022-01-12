@@ -2,7 +2,9 @@ package cz.helheim.duels.arena.team;
 
 import cz.helheim.duels.Duels;
 import cz.helheim.duels.arena.Arena;
+import cz.helheim.duels.arena.ArenaBase;
 import cz.helheim.duels.arena.ArenaMode;
+import cz.helheim.duels.maps.LocalGameMap;
 import cz.helheim.duels.utils.Cuboid;
 import cz.helheim.duels.utils.MessageUtil;
 import org.bukkit.Bukkit;
@@ -19,18 +21,16 @@ public class ArenaTeam {
     private final ChatColor color;
     private final List<Player> members;
     private final List<Player> alivePlayers;
-    private final Cuboid spawn;
-    private final Cuboid portal;
     private final ArenaMode mode;
+    private final ArenaBase base;
 
-    public ArenaTeam(String name, ChatColor color, Cuboid spawn, Cuboid portal, ArenaMode mode){
+    public ArenaTeam(String name, ChatColor color, ArenaMode mode, ArenaBase base){
         this.name = name;
         this.color = color;
         this.members = new ArrayList<>();
         this.alivePlayers = new ArrayList<>();
-        this.spawn = spawn;
-        this.portal = portal;
         this.mode = mode;
+        this.base = base;
     }
 
     public void addPlayer(Player player){
@@ -66,14 +66,6 @@ public class ArenaTeam {
         return members;
     }
 
-    public Cuboid getSpawn() {
-        return spawn;
-    }
-
-    public Cuboid getPortal() {
-        return portal;
-    }
-
     public ArenaMode getMode() {
         return mode;
     }
@@ -82,4 +74,8 @@ public class ArenaTeam {
         return alivePlayers;
     }
 
+
+    public ArenaBase getBase() {
+        return base;
+    }
 }
