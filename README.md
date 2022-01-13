@@ -11,6 +11,11 @@ This minigame is unique, ano mostly 100% free and open source!
 - Sumo
 - SkyWars
 - OP Duels
+# Types
+- 1vs1
+- 2vs2
+- 3vs3
+- 4vs4
 
 # Arena
 No more configuring 100 different arenas and maps so players can play without waiting!
