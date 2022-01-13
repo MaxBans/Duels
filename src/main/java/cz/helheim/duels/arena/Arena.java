@@ -385,6 +385,7 @@ public class Arena {
                             }
                         }
                     }
+
                 //Bukkit.broadcastMessage(MessageUtil.getPrefix() + " §b" + winner.getName() + " §7won on arena §3" + map.getName() + "§7.");
                 break;
 
