@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Queue {
@@ -131,6 +132,46 @@ public class Queue {
             player.getPlayer().sendMessage("§cStarting cancelled because a player left the queue!");
         }
         this.started = false;
+    }
+
+    public static int getTotalPlayersQueuingCount(){
+        int count = 0;
+        if(!OPEN_QUEUES.isEmpty()) {
+            for (Queue queue : OPEN_QUEUES) {
+                if(!queue.playersQueued.isEmpty()){
+                    count = count + queue.playersQueued.size();
+                }
+            }
+        }
+        return count;
+    }
+
+    public static int getTotalPlayersQueuingCount(ArenaType type){
+        int count = 0;
+        if(!OPEN_QUEUES.isEmpty()) {
+            for (Queue queue : OPEN_QUEUES) {
+                if (queue.getArenaType().equals(type)) {
+                    if (!queue.playersQueued.isEmpty()) {
+                        count = count + queue.playersQueued.size();
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
+    public static int getTotalPlayersQueuingCount(ArenaType type, ArenaMode mode){
+        int count = 0;
+        if(!OPEN_QUEUES.isEmpty()) {
+            for (Queue queue : OPEN_QUEUES) {
+                if (queue.getArenaType().equals(type) && queue.getArenaMode().equals(mode)) {
+                    if (!queue.playersQueued.isEmpty()) {
+                        count = count + queue.playersQueued.size();
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     public ArenaMode getArenaMode() {

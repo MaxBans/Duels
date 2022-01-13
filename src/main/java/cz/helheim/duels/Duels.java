@@ -1,5 +1,6 @@
 package cz.helheim.duels;
 
+import cz.helheim.duels.commands.MenuCommand;
 import cz.helheim.duels.listeners.GameListener;
 import cz.helheim.duels.listeners.JoinListener;
 import cz.helheim.duels.listeners.PlayerDeathListener;
@@ -12,9 +13,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Duels extends JavaPlugin {
     private static Duels instance;
-
-    private static MapManager mapManager;
-    private FileUtil fileUtil;
 
     public Duels(){
         instance = this;
@@ -31,8 +29,9 @@ public final class Duels extends JavaPlugin {
         Bukkit.getLogger().severe("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         getConfig();
         saveDefaultConfig();
-        fileUtil = new FileUtil(this);
+        FileUtil fileUtil = new FileUtil(this);
         fileUtil.setupFiles();
+
         //mapManager = new MapManager(fileUtil.getMapsYAML()); //TODO
         register();
 
@@ -46,13 +45,10 @@ public final class Duels extends JavaPlugin {
     public void register(){
         getCommand("duel").setExecutor(new DuelCommand());
         getCommand("queue").setExecutor(new QueueCommand());
+        getCommand("menu").setExecutor(new MenuCommand());
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
-    }
-
-    public MapManager getMapManager(){
-        return mapManager;
     }
 
 }

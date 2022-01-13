@@ -12,3 +12,4 @@ commands:
     aliases:
       - "q"
     description: "Usage: /queue <mode> <type> Example: /queue BuildUHC 1vs1"
+  menu:

@@ -21,8 +21,6 @@ public class PlayerDeathListener implements Listener {
 
     private final Map<UUID, UUID> lastHitUuid = new HashMap<>();
     private final Set<UUID> causedVoid = new HashSet<>();
-    ConfigManager configManager = new ConfigManager();
-
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDamage(EntityDamageByEntityEvent evt) {
@@ -93,66 +91,81 @@ public class PlayerDeathListener implements Listener {
                                     Player killer = Bukkit.getPlayer(killedID);
                                     arena.killPlayer(p, killer, arena.getArenaType());
                                 } else {
-                                    arena.killPlayer(p, null, arena.getArenaType());
                                     e.setCancelled(true);
-                                    p.setHealth(20D);
-                                    p.setFoodLevel(20);
+                                    arena.killPlayer(p, null, arena.getArenaType());
                                 }
                             } else if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                                e.setCancelled(true);
-                                p.setHealth(20D);
-                                p.setFoodLevel(20);
                                 arena.killPlayer(p, null, arena.getArenaType());
-
+                                Bukkit.getLogger().warning("Called Fall 01");
+                                p.setFallDistance(0);
+                                e.setCancelled(true);
                             } else if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
-                                if (lastHitUuid.containsKey(p.getUniqueId())) {
-                                    UUID killedID = lastHitUuid.get(p.getUniqueId());
-                                    Player killer = Bukkit.getPlayer(killedID);
-                                    arena.killPlayer(p, killer, arena.getArenaType());
-                                    e.setCancelled(true);
+                                wasHit(e, p, arena);
 
-                                } else {
-                                    arena.killPlayer(p, null, arena.getArenaType());
-                                    e.setCancelled(true);
-                                    p.setHealth(20D);
-                                    p.setFoodLevel(20);
-                                }
                             } else if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                                 EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
                                 e.setCancelled(true);
                                 if (event.getDamager() instanceof Player) {
                                     Player killer = (Player) event.getDamager();
+                                    Bukkit.getLogger().warning("Called Entity Attack 01");
                                     arena.killPlayer(p, killer, arena.getArenaType());
-
                                 } else {
+                                    Bukkit.getLogger().warning("Called Entity Attack 02");
                                     arena.killPlayer(p, null, arena.getArenaType());
-
                                 }
-                                p.setHealth(20D);
-                                p.setFoodLevel(20);
+                                e.setCancelled(true);
                             } else if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
                                 EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
                                 Projectile projectile = (Projectile) event.getDamager();
                                 if (((projectile.getShooter() instanceof Player)) && ((event.getEntity() instanceof Player))) {
                                     Player player = ((Player) event.getEntity()).getPlayer();
                                     Player killer = ((Player) projectile.getShooter()).getPlayer();
-                                    arena.killPlayer(player, killer, arena.getArenaType());
-
                                     e.setCancelled(true);
                                     event.setCancelled(true);
+                                    arena.killPlayer(player, killer, arena.getArenaType());
                                 }
                             } else {
-                                System.out.println("statement not added yet.");
+                                Bukkit.getLogger().warning("statement not added yet.");
                                 e.setCancelled(true);
                                 arena.killPlayer(p, null, arena.getArenaType());
-                                p.setHealth(20D);
-                                p.setFoodLevel(20);
                             }
                         }
                     }
                 }
             }
          }
+
+      @EventHandler(priority = EventPriority.HIGHEST)
+      public void checkBridgeFall(EntityDamageEvent e){
+          Entity p = e.getEntity();
+          if (((p instanceof Player))){
+              Player player = (Player) p;
+              if(!ArenaRegistry.isInArena(player)) return;
+              Arena arena = ArenaRegistry.getArena(player);
+              if(arena.getArenaType() != ArenaType.THE_BRIDGE) return;
+
+              if(e.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                  wasHit(e, player, arena);
+                  e.setCancelled(true);
+                  player.setFallDistance(0);
+              }
+
+          }
+
+      }
+
+    public void wasHit(EntityDamageEvent e, Player p, Arena arena) {
+        if (lastHitUuid.containsKey(p.getUniqueId())) {
+            UUID killedID = lastHitUuid.get(p.getUniqueId());
+            Player killer = Bukkit.getPlayer(killedID);
+            p.setFallDistance(0);
+            arena.killPlayer(p, killer, arena.getArenaType());
+        } else {
+            p.setFallDistance(0);
+            arena.killPlayer(p, null, arena.getArenaType());
+        }
+        e.setCancelled(true);
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void checkDead(EntityDamageEvent e) {

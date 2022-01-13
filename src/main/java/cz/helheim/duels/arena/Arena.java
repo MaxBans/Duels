@@ -126,6 +126,7 @@ public class Arena {
         state = GameState.IDLE;
         players.clear();
         spectators.clear();
+        alivePlayers.clear();
         if(preGameCountdownTask.isRunning) {
             preGameCountdownTask.cancel();
         }
@@ -144,7 +145,6 @@ public class Arena {
         totalTimeCountdownTask = new TotalTimeCountdownTask(this);
         endingCountdownTask = new EndingCountdownTask(this);
         cageOpenCountdown = new CageOpenCountdown(this);
-        alivePlayers.clear();
         game = new Game(this);
         this.isAvailable = true;
         if (scoreboard != null) {
@@ -206,7 +206,7 @@ public class Arena {
        List<String> names = new ArrayList<>();
        for(Player p : getOpponents(player)){
            if(!alivePlayers.contains(p)){
-               names.add(ChatColor.GRAY + p.getName());
+               names.add(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + p.getName());
            }else {
                names.add(p.getName());
            }
@@ -263,18 +263,22 @@ public class Arena {
             if(killer == null){
                 alivePlayers.remove(player);
                 teamManager.getTeam(player).getAlivePlayers().remove(player);
+                player.setHealth(20D);
+                player.setFoodLevel(20);
                 player.getInventory().clear();
                 addSpectator(player);
                 TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.RED + ChatColor.BOLD.toString() + "YOU DIED!");
-                sendMessage("§3" + player.getName() + "§7 died");
+                sendMessage(getTeamManager().getTeam(player).getColor() + player.getName() + "§7 died!");
                 return;
             }
             alivePlayers.remove(player);
             teamManager.getTeam(player).getAlivePlayers().remove(player);
+            player.setHealth(20D);
+            player.setFoodLevel(20);
             player.getInventory().clear();
             addSpectator(player);
             TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.RED + ChatColor.BOLD.toString() + "YOU DIED!");
-            sendMessage("§3" + player.getName() + "§7 was killed by §3" + killer.getName());
+            sendMessage(getTeamManager().getTeam(player).getColor() + player.getName() + "§7 was killed by " + getTeamManager().getTeam(killer).getColor() + killer.getName());
             game.addKill(killer);
 
             if(teamManager.isLastTeam(teamManager.getTeam(killer))){
@@ -282,19 +286,22 @@ public class Arena {
             }
         }else if(mode.equals(ArenaType.THE_BRIDGE)){
             if(killer == null){
+                player.setHealth(20D);
+                player.setFoodLevel(20);
                 player.getInventory().clear();
                 kitItemManager.addKitItems(player.getInventory());
-                sendMessage("§3" + player.getName() + "§7 died");
+                sendMessage(getTeamManager().getTeam(player).getColor() + player.getName() + "§7 died");
                 player.teleport(teamManager.getTeam(player).getBase().getRespawnPoint().getRandomLocation());
                 player.setHealth(20);
                 return;
             }
             player.getInventory().clear();
             kitItemManager.addKitItems(player.getInventory());
-            sendMessage("§3" + player.getName() + "§7 was killed by §3" + killer.getName());
+            sendMessage(getTeamManager().getTeam(player).getColor() + player.getName() + "§7 was killed by " + getTeamManager().getTeam(killer).getColor() + killer.getName());
             player.teleport(teamManager.getTeam(player).getBase().getRespawnPoint().getRandomLocation());
             game.addKill(killer);
-            player.setHealth(20);
+            player.setHealth(20D);
+            player.setFoodLevel(20);
 
         }
     }
@@ -371,23 +378,13 @@ public class Arena {
                     nMeta.setLore(lore);
                     player.getInventory().setItem(4, next);
                 }
-                if(arenaType.equals(ArenaType.BUILD_UHC) || arenaType.equals(ArenaType.CLASSIC_DUELS)) {
                     for (ArenaTeam team : getTeams()) {
                         if (teamManager.isLastTeam(team)) {
                             for (Player player : team.getMembers()) {
                                 TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.YELLOW + "Victory!");
                             }
-                        }else{
-                            for(Player player : team.getMembers()){
-                                TitleAPI.sendTitle(player, 30, 45, 30, "§c§You Lost!");
-                            }
                         }
                     }
-                }else if(arenaType.equals(ArenaType.THE_BRIDGE)){
-                    for(Player player : winner.getMembers()){
-                        TitleAPI.sendTitle(player, 30, 45, 30, ChatColor.YELLOW + "Victory!");
-                    }
-                }
                 //Bukkit.broadcastMessage(MessageUtil.getPrefix() + " §b" + winner.getName() + " §7won on arena §3" + map.getName() + "§7.");
                 break;
 

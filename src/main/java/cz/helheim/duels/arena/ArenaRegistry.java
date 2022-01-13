@@ -96,4 +96,44 @@ public class ArenaRegistry {
         return modeArenas;
     }
 
+    public static int getTotalPlayersPlaying(){
+        int players = 0;
+        if(!activeArenas.isEmpty()) {
+            for (Arena arena : activeArenas) {
+                if(!arena.getPlayers().isEmpty()) {
+                    players = players + arena.getPlayers().size();
+                }
+            }
+        }
+        return players;
+    }
+
+    public static int getTotalPlayersPlaying(ArenaType type){
+        int players = 0;
+        if(!activeArenas.isEmpty()) {
+            for (Arena arena : activeArenas) {
+                if(arena.getArenaType() == type) {
+                    if(!arena.getPlayers().isEmpty()) {
+                        players = players + arena.getPlayers().size();
+                    }
+                }
+            }
+        }
+        return players;
+    }
+
+    public static int getTotalPlayersPlaying(ArenaType type, ArenaMode mode){
+        int players = 0;
+        if(!activeArenas.isEmpty()) {
+            for (Arena arena : activeArenas) {
+                if(arena.getArenaType() == type && arena.getArenaMode() == mode) {
+                    if(!arena.getPlayers().isEmpty()) {
+                        players = players + arena.getPlayers().size();
+                    }
+                }
+            }
+        }
+        return players;
+    }
+
 }
