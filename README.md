@@ -27,5 +27,5 @@ In this plugin arenas are working with instance system. When enough players are 
 - Custom menu system. Create your own menus!
 - Kit Editor - Soon
 
-#WARNING
+# WARNING
 This plugin is still being in development so it's still in Beta version
