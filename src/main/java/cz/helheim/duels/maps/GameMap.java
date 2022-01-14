@@ -8,5 +8,5 @@ public interface GameMap {
     boolean restoreFromSource();
 
     boolean isLoaded();
-    World getWorld();
+    World getBukkitWorld();
 }

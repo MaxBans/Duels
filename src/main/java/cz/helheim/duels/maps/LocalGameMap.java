@@ -11,7 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.io.File;
 import java.io.IOException;
 
-public class LocalGameMap {
+public class LocalGameMap implements GameMap {
 
     private final String name;
     private final String id;
@@ -85,6 +85,7 @@ public class LocalGameMap {
     public boolean isLoaded(){
         return this.bukkitWorld != null;
     }
+
 
     public String getName() {
         return name;
