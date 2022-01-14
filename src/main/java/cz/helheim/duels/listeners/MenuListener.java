@@ -23,13 +23,14 @@ public class MenuListener implements Listener {
         Player player = (Player) e.getWhoClicked();
 
         for(Menu menu : Menu.getMENUS()){
-            if(!menu.getGui().equals(inventory)){
+            if(!menu.getGui().getTitle().equals(inventory.getTitle())){
                 return;
             }
             for(MenuItem menuItem : menu.getItems()){
-                if(item.getType().equals(menuItem.getMaterial()) && item.hasItemMeta()){
+                if(item.getItemMeta().getDisplayName().equals(menuItem.getName()) && item.hasItemMeta()){
                     Bukkit.dispatchCommand((CommandSender) player, menuItem.getCommand());
                     player.closeInventory();
+                    return;
                 }
             }
             e.setCancelled(true);
