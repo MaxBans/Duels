@@ -85,7 +85,7 @@ public class Menu {
         return configuration;
     }
 
-    private List<MenuItem> getItems(){
+    public List<MenuItem> getItems(){
         return items;
     }
 
