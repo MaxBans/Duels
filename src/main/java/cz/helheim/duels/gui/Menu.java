@@ -4,6 +4,7 @@ import cz.helheim.duels.Duels;
 import cz.helheim.duels.items.KitItem;
 import cz.helheim.duels.utils.FileUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -45,7 +46,7 @@ public class Menu {
             }
         }
        // this.isDesigned = configuration.getBoolean("designed");
-        this.title = configuration.getString("title");
+        this.title = ChatColor.translateAlternateColorCodes('&', configuration.getString("title"));
         this.size = configuration.getInt("size");
         this.command = configuration.getString("command");
         this.updateInterval = configuration.getInt("updateInterval");
@@ -60,12 +61,12 @@ public class Menu {
 
         this.gui = Bukkit.createInventory(null, size, title);
         if(designed){
-            for(int i = 0; i < 8; i++){
-                gui.setItem(i, new ItemStack(Material.STAINED_GLASS, DyeColor.BLACK.getData()));
+            for(int i = 0; i < 9; i++){
+                gui.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1,DyeColor.BLACK.getData()));
             }
 
-            for(int i = size - 8; i < size; i++){
-                gui.setItem(i, new ItemStack(Material.STAINED_GLASS, DyeColor.BLACK.getData()));
+            for(int i = size - 9; i < size; i++){
+                gui.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.BLACK.getData()));
             }
         }
 

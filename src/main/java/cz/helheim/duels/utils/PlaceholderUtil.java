@@ -35,15 +35,15 @@ public class PlaceholderUtil {
 
     public static Map<String, Object> getGlobalPlaceholders(){
         Map<String, Object> placeholders = new HashMap<>();
-        placeholders.put("%duels_playing%", ArenaRegistry.getTotalPlayersPlaying());
-        placeholders.put("%queue_total%", Queue.getTotalPlayersQueuingCount());
+        placeholders.put("%duels_playing%", String.valueOf(ArenaRegistry.getTotalPlayersPlaying()));
+        placeholders.put("%queue_total%", String.valueOf(Queue.getTotalPlayersQueuingCount()));
         for(ArenaType type : ArenaType.values()){
-            placeholders.put("%" + type.getFormattedName() + "_total%", ArenaRegistry.getTotalPlayersPlaying(type));
-            placeholders.put("%queue" + type.getFormattedName() + "_total%", Queue.getTotalPlayersQueuingCount(type));
+            placeholders.put("%" + type.getFormattedName() + "_total%", String.valueOf(ArenaRegistry.getTotalPlayersPlaying(type)));
+            placeholders.put("%queue_" + type.getFormattedName() + "_total%", String.valueOf(Queue.getTotalPlayersQueuingCount(type)));
 
             for(ArenaMode mode : ArenaMode.values()){
-                placeholders.put("%" + type.getFormattedName() + "_" + mode.getName() + "_total%", ArenaRegistry.getTotalPlayersPlaying(type, mode));
-                placeholders.put("%queue" + type.getFormattedName() + "_" + mode.getName() + "_total%", Queue.getTotalPlayersQueuingCount(type, mode));
+                placeholders.put("%" + type.getFormattedName() + "_" + mode.getName() + "_total%", String.valueOf(ArenaRegistry.getTotalPlayersPlaying(type, mode)));
+                placeholders.put("%queue_" + type.getFormattedName() + "_" + mode.getName() + "_total%", String.valueOf(Queue.getTotalPlayersQueuingCount(type, mode)));
             }
         }
 

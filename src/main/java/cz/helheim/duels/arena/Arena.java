@@ -311,6 +311,7 @@ public class Arena {
             spectators.add(player);
             player.getPlayer().teleport(map.getSpecSpawn());
             player.sendMessage(MessageUtil.getPrefix() + " §7You are now spectating");
+            player.setAllowFlight(true);
             for (Player p : players) {
                 p.hidePlayer(player);
             }
