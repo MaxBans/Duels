@@ -1,7 +1,6 @@
 package cz.helheim.duels.gui;
 
 import cz.helheim.duels.Duels;
-import cz.helheim.duels.items.KitItem;
 import cz.helheim.duels.utils.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,9 +9,11 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,8 +24,6 @@ public class Menu {
     private static final List<Menu> MENUS = new ArrayList<>();
 
     private final String name;
-    private File file;
-    private FileConfiguration configuration;
     private final String title;
     private final int size;
     private final String command;
@@ -32,20 +31,23 @@ public class Menu {
     private final int updateInterval;
     private final Inventory gui;
     private final boolean designed;
+    private File file;
+    private FileConfiguration configuration;
+    private BukkitTask updateTask;
 
 
-    public Menu(String name){
+    public Menu(String name) {
         this.name = name;
         this.items = new ArrayList<>();
-        if(FileUtil.getMenuFolder().listFiles() != null) {
+        if (FileUtil.getMenuFolder().listFiles() != null) {
             for (File file : FileUtil.getMenuFolder().listFiles()) {
-                if(file.getName().equals(name + ".yml")) {
+                if (file.getName().equals(name + ".yml")) {
                     this.file = file;
                     configuration = YamlConfiguration.loadConfiguration(file);
                 }
             }
         }
-       // this.isDesigned = configuration.getBoolean("designed");
+        // this.isDesigned = configuration.getBoolean("designed");
         this.title = ChatColor.translateAlternateColorCodes('&', configuration.getString("title"));
         this.size = configuration.getInt("size");
         this.command = configuration.getString("command");
@@ -58,22 +60,32 @@ public class Menu {
         }
 
 
-
         this.gui = Bukkit.createInventory(null, size, title);
-        if(designed){
-            for(int i = 0; i < 9; i++){
-                gui.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1,DyeColor.BLACK.getData()));
+        if (designed) {
+            for (int i = 0; i < 9; i++) {
+                gui.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.BLACK.getData()));
             }
 
-            for(int i = size - 9; i < size; i++){
+            for (int i = size - 9; i < size; i++) {
                 gui.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.BLACK.getData()));
             }
         }
 
-        for(MenuItem item : items){
+
+        for (MenuItem item : items) {
             gui.setItem(item.getSlot(), item.make());
         }
+        /*/if (!(updateInterval == 0)) {
 
+                updateTask = Bukkit.getServer().getScheduler().runTaskTimer(Duels.getInstance(), () -> {
+                    for (HumanEntity humanEntity : gui.getViewers()) {
+                        ((Player) humanEntity).updateInventory();
+                    }
+                    Bukkit.getLogger().info("DEBUG: Inventory updated!");
+                }, 0, updateInterval);
+                Bukkit.getScheduler().runTask(Duels.getInstance(), (Runnable) updateTask);
+            }
+        /*/
         MENUS.add(this);
     }
 
@@ -85,7 +97,7 @@ public class Menu {
         return configuration;
     }
 
-    public List<MenuItem> getItems(){
+    public List<MenuItem> getItems() {
         return items;
     }
 
@@ -119,5 +131,9 @@ public class Menu {
 
     public boolean isDesigned() {
         return designed;
+    }
+
+    public BukkitTask getUpdateTask(){
+        return updateTask;
     }
 }

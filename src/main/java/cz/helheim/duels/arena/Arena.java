@@ -60,10 +60,12 @@ public class Arena {
         alivePlayers = new HashSet<>();
         spectators = new ArrayList<>();
         placedBlocks = new ArrayList<>();
-        redBase = new ArenaBase(map.getRedBase(), map.getRedSpawnPoint(), map.getRedRespawnPoint(), map.getRedPortal(), map.getRedCage(), map.getRedCageFloor());
-        blueBase = new ArenaBase(map.getBlueBase(), map.getBlueSpawnPoint(), map.getBlueRespawnPoint(), map.getBluePortal(), map.getBlueCage(), map.getBlueCageFloor());
-        redTeam = new ArenaTeam("Red", ChatColor.RED, mode, redBase);
-        blueTeam = new ArenaTeam("Blue", ChatColor.BLUE, mode, blueBase);
+        redTeam = new ArenaTeam("Red", ChatColor.RED, mode);
+        blueTeam = new ArenaTeam("Blue", ChatColor.BLUE, mode);
+        redBase = new ArenaBase(map.getBase(redTeam), map.getSpawnPoint(redTeam), map.getRespawnPoint(redTeam), map.getPortal(redTeam), map.getCage(redTeam), map.getCageFloor(redTeam));
+        blueBase = new ArenaBase(map.getBase(blueTeam), map.getSpawnPoint(blueTeam), map.getRespawnPoint(blueTeam), map.getPortal(blueTeam), map.getCage(blueTeam), map.getCageFloor(blueTeam));
+        redTeam.setBase(redBase);
+        blueTeam.setBase(blueBase);
         teams = new ArrayList<>();
         teams.add(redTeam);
         teams.add(blueTeam);

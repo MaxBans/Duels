@@ -1,5 +1,6 @@
 package cz.helheim.duels.managers;
 
+import cz.helheim.duels.arena.team.ArenaTeam;
 import cz.helheim.duels.maps.MapManager;
 import cz.helheim.duels.utils.Cuboid;
 import org.bukkit.Location;
@@ -14,5 +15,9 @@ public class LocationManager {
 
     public static Cuboid getRed(String type, World world, ConfigurationSection section){
         return new Cuboid(MapManager.locationFromString(section.getString("red." + type + ".loc1"), world), MapManager.locationFromString(section.getString("red." + type + ".loc2"), world));
+    }
+
+    public static Cuboid getLocation(ArenaTeam team, String type, World world, ConfigurationSection section){
+        return new Cuboid(MapManager.locationFromString(section.getString(team.getName().toLowerCase() + "." + type + ".loc1"), world), MapManager.locationFromString(section.getString(team.getName().toLowerCase() + "." + type + ".loc2"), world));
     }
 }

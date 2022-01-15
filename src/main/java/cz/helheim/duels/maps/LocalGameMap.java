@@ -2,6 +2,7 @@ package cz.helheim.duels.maps;
 
 import cz.helheim.duels.arena.ArenaMode;
 import cz.helheim.duels.arena.ArenaType;
+import cz.helheim.duels.arena.team.ArenaTeam;
 import cz.helheim.duels.managers.LocationManager;
 import cz.helheim.duels.utils.Cuboid;
 import cz.helheim.duels.utils.FileUtil;
@@ -99,66 +100,35 @@ public class LocalGameMap implements GameMap {
         return bukkitWorld;
     }
 
-    public Cuboid getBlueSpawnPoint() {
+    public Cuboid getSpawnPoint(ArenaTeam team) {
         if(!isLoaded()) load();
-        return LocationManager.getBlue("spawn", bukkitWorld, section);
+        return LocationManager.getLocation(team, "spawn", bukkitWorld, section);
     }
 
-    public Cuboid getRedSpawnPoint() {
+    public Cuboid getCage(ArenaTeam team){
         if(!isLoaded()) load();
-        return LocationManager.getRed("spawn", bukkitWorld, section);
+        return LocationManager.getLocation(team,"cage", bukkitWorld, section);
     }
 
-    public Cuboid getBlueCage(){
+    public Cuboid getCageFloor(ArenaTeam team){
         if(!isLoaded()) load();
-        return LocationManager.getBlue("cage", bukkitWorld, section);
+        return LocationManager.getLocation(team, "floor", bukkitWorld, section);
     }
 
-    public Cuboid getRedCage(){
+    public Cuboid getRespawnPoint(ArenaTeam team){
         if(!isLoaded()) load();
-        return LocationManager.getRed("cage", bukkitWorld, section);
+        return LocationManager.getLocation(team,"respawn", bukkitWorld, section);
     }
 
-    public Cuboid getBlueCageFloor(){
+    public Cuboid getPortal(ArenaTeam team){
         if(!isLoaded()) load();
-        return LocationManager.getBlue("floor", bukkitWorld, section);
+        return LocationManager.getLocation(team,"portal", bukkitWorld, section);
     }
 
-    public Cuboid getRedCageFloor(){
+    public Cuboid getBase(ArenaTeam team){
         if(!isLoaded()) load();
-        return LocationManager.getRed("floor", bukkitWorld, section);
+        return LocationManager.getLocation(team,"base", bukkitWorld, section);
     }
-
-    public Cuboid getBlueRespawnPoint(){
-        if(!isLoaded()) load();
-        return LocationManager.getBlue("respawn", bukkitWorld, section);
-    }
-
-    public Cuboid getRedRespawnPoint(){
-        if(!isLoaded()) load();
-        return LocationManager.getRed("respawn", bukkitWorld, section);
-    }
-
-    public Cuboid getBluePortal(){
-        if(!isLoaded()) load();
-        return LocationManager.getBlue("portal", bukkitWorld, section);
-    }
-
-    public Cuboid getRedPortal(){
-        if(!isLoaded()) load();
-        return LocationManager.getRed("portal", bukkitWorld, section);
-    }
-
-    public Cuboid getBlueBase(){
-        if(!isLoaded()) load();
-        return LocationManager.getBlue("base", bukkitWorld, section);
-    }
-
-    public Cuboid getRedBase(){
-        if(!isLoaded()) load();
-        return LocationManager.getRed("base", bukkitWorld, section);
-    }
-
 
     public ArenaType getArenaType() {
         return arenaType;

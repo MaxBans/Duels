@@ -22,16 +22,16 @@ public class ArenaTeam {
     private final List<Player> members;
     private final List<Player> alivePlayers;
     private final ArenaMode mode;
-    private final ArenaBase base;
+    private ArenaBase base;
 
-    public ArenaTeam(String name, ChatColor color, ArenaMode mode, ArenaBase base){
+    public ArenaTeam(String name, ChatColor color, ArenaMode mode){
         this.name = name;
         this.color = color;
         this.members = new ArrayList<>();
         this.alivePlayers = new ArrayList<>();
         this.mode = mode;
-        this.base = base;
     }
+
 
     public void addPlayer(Player player){
         if(isFull()){
@@ -77,5 +77,9 @@ public class ArenaTeam {
 
     public ArenaBase getBase() {
         return base;
+    }
+
+    public void setBase(ArenaBase base) {
+        this.base = base;
     }
 }
