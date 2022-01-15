@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 
 public class MenuCommand implements CommandExecutor {
 
+    /*/
+    This is an example command. Will be deleted soon!
+     */
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

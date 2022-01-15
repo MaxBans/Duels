@@ -5,7 +5,7 @@ lobby:
   y: 79
   z: 68
 
-Build UHC:
+BuildUHC:
   1vs1:
     ScoreboardTitle: "&3&lDuels&f | %time%"
 
@@ -14,7 +14,7 @@ Build UHC:
       - "&7&lMap:&r&b %map%"
       - " "
       - "&f&lOpponent:"
-      - "  %opponent_1%"
+      - "&l%opponents%"
       - " "
       - "&fMode:&b %arena_mode%"
       - "&fType: &b %arena_type%"
@@ -28,13 +28,12 @@ Build UHC:
       - "&7&lMap:&r&b %map%"
       - " "
       - "&f&lOpponents:"
-      - "  %opponent_1%"
-      - "  %opponent_2%"
+      - "  %opponents%"
       - " "
       - "&fMode:&b %arena_mode%"
       - "&fType: &b %arena_type%"
       - ""
-      - "&7Kills: %kills%"
+      - "&7Kills:&f %kills%"
       - ""
       - "&3mc.helheim.cz"
   3vs3:
@@ -45,14 +44,12 @@ Build UHC:
       - "&7&lMap:&r&b %map%"
       - " "
       - "&f&lOpponents:"
-      - "  %opponent_1%"
-      - "  %opponent_2%"
-      - "  %opponent_3%"
+      - "  %opponents%"
       - " "
       - "&fMode:&b %arena_mode%"
       - "&fType: &b %arena_type%"
       - ""
-      - "&7Kills: %kills%"
+      - "&7Kills:&f %kills%"
       - ""
       - "&3mc.helheim.cz"
   4vs4:
@@ -63,46 +60,44 @@ Build UHC:
       - "&7&lMap:&r&b %map%"
       - " "
       - "&f&lOpponents:"
-      - "  %opponent_1%"
-      - "  %opponent_2%"
-      - "  %opponent_3%"
-      - "  %opponent_4%"
+      - "  %opponents%"
+      - " "
+      - "&fMode:&b %arena_mode%"
+      - "&fType:&b %arena_type%"
+      - ""
+      - "&7Kills:&f %kills%"
+      - ""
+      - "&3mc.helheim.cz"
+ClassicDuels:
+  1vs1:
+    ScoreboardTitle: "&3&lDuels&f | %time%"
+
+    Scoreboard:
+      - "&7ID:&f %id%"
+      - "&7&lMap:&r&b %map%"
+      - " "
+      - "&f&lOpponent:"
+      - "  %opponents%"
       - " "
       - "&fMode:&b %arena_mode%"
       - "&fType: &b %arena_type%"
       - ""
-      - "&7Kills: %kills%"
+      - "&3mc.helheim.cz"
+TheBridge:
+  1vs1:
+    ScoreboardTitle: "&3&lDuels&f | %time%"
+
+    Scoreboard:
+      - "&7ID:&f %id%"
+      - "&7&lMap:&r&b %map%"
+      - " "
+      - "&c[R] %red_points%"
+      - "&9[B] %blue_points%"
+      - ""
+      - "&7Kills:&f %kills%"
+      - "&7Goals:&f %goals%"
+      - ""
+      - "&fMode:&b %arena_mode%"
+      - "&fType:&b %arena_type%"
       - ""
       - "&3mc.helheim.cz"
-Classic Duels:
-  ScoreboardTitle: "&3&lDuels&f | %time%"
-
-  Scoreboard:
-    - "&7ID:&f %id%"
-    - "&7&lMap:&r&b %map%"
-    - " "
-    - "&f&lOpponent:"
-    - "  %opponent%"
-    - "  HP:&b %opponent_hp%"
-    - " "
-    - "&fMode:&b %arena_mode%"
-    - "&fType: &b %arena_type%"
-    - ""
-    - "&3mc.helheim.cz"
-The Bridge:
-  ScoreboardTitle: "&3&lDuels&f | %time%"
-
-  Scoreboard:
-    - "&7ID:&f %id%"
-    - "&7&lMap:&r&b %map%"
-    - " "
-    - "&c[R] %red_points%"
-    - "&3[B] %blue_points%"
-    - ""
-    - "&7Kills:&f %kills%"
-    - "&7Goals:&g %goals%"
-    - ""
-    - "&fMode:&b %arena_mode%"
-    - "&fType: &b %arena_type%"
-    - ""
-    - "&3mc.helheim.cz"

@@ -28,9 +28,11 @@ public class MenuListener implements Listener {
             }
             for(MenuItem menuItem : menu.getItems()){
                 if(item.getItemMeta().getDisplayName().equals(menuItem.getName()) && item.hasItemMeta()){
-                    Bukkit.dispatchCommand((CommandSender) player, menuItem.getCommand());
-                    player.closeInventory();
-                    return;
+                    if(menuItem.getCommand() != null) {
+                        Bukkit.dispatchCommand((CommandSender) player, menuItem.getCommand());
+                        player.closeInventory();
+                        return;
+                    }
                 }
             }
             e.setCancelled(true);

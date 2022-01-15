@@ -1,0 +1,67 @@
+title: "&8BuildUHC"
+size: 36
+command: buhc
+updateInterval: 20
+designed: true
+
+items:
+  0:
+    material: GOLDEN_APPLE
+    name: "&bBuildUHC"
+    lore:
+      - "&fOnline Players:&b %BuildUHC_total%"
+    slot: 4
+    command: nwm
+    amount: 1
+  1:
+    material: FIREWORK
+    name: "&bBuildUHC 1vs1"
+    lore:
+      - "&fPlayers queing:&b %queue_BuildUHC_1vs1_total%"
+      - ""
+      - "&7Right-Click to join Queue"
+    slot: 10
+    command: queue 1vs1 buhc
+    amount: 1
+  2:
+    material: FIREWORK
+    name: "&bBuildUHC 2vs2"
+    lore:
+      - "&fPlayers queing:&b %queue_BuildUHC_1vs1_total%"
+      - ""
+      - "&7Right-Click to join Queue"
+    slot: 12
+    command: queue 2vs2 buhc
+    amount: 2
+  3:
+    material: FIREWORK
+    name: "&bBuildUHC 3vs3"
+    lore:
+      - "&fPlayers queing:&b %queue_BuildUHC_3vs3_total%"
+      - ""
+      - "&7Right-Click to join Queue"
+    slot: 14
+    command: queue 3vs3 buhc
+    amount: 3
+  4:
+    material: FIREWORK
+    name: "&bBuildUHC 4vs4"
+    lore:
+      - "&fPlayers queing:&b %queue_BuildUHC_4vs4_total%"
+      - ""
+      - "&7Right-Click to join Queue"
+    slot: 16
+    command: queue 4vs4 buhc
+    amount: 4
+  5:
+    material: BARRIER
+    name: "&cLeave Queue"
+    lore:
+      - ""
+      - "&7Right-Click to leave Queue"
+    slot: 35
+    command: queue leave
+    amount: 1
+
+
+

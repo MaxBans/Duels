@@ -5,64 +5,174 @@ BuildUHC:
       name: Fractal
       builder: "Nejaky Ape"
       mode: SOLO
-      BLUE_SPAWN:
-        - "1,65,-38"
-        - "3,65,-39"
-      RED_SPAWN:
-        - "1,65,-38"
-        - "3,65,-39"
-      PORTAL_ONE:
-        - "-45,55,64"
-        - "-48,53,65"
-      SPECTATOR_SPAWN: "0,81,3"
+      blue:
+        spawn:
+          loc1: "1,65,-38"
+          loc2: "3,65,-39"
+        cage:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        floor:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        respawn:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        portal:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        base:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+      red:
+        spawn:
+          loc1: "1,65,-6"
+          loc2: "3,65,-8"
+        cage:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        floor:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        respawn:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        portal:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        base:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+      spectator_location: "0,81,3"
     1:
       name: Arena
       builder: "idk jakoby"
       mode: SOLO
-      BLUE_SPAWN:
-        - "1,65,-38"
-        - "3,65,-39"
-      RED_SPAWN:
-        - "-1,66, -6"
-        - "-3, 66, -8"
-      PORTAL_ONE:
-        - "-45,55,64"
-        - "-48,53,65"
-      PORTAL_TWO:
-        - "-49,55,64"
-        - "-45,53,65"
-      SPECTATOR_SPAWN: "0,81,3"
+      blue:
+        spawn:
+          loc1: "1,65,-38"
+          loc2: "3,65,-39"
+        cage:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        floor:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        respawn:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        portal:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        base:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+      red:
+        spawn:
+          loc1: "1,65,-6"
+          loc2: "3,65,-8"
+        cage:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        floor:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        respawn:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        portal:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        base:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+      spectator_location: "0,81,3"
     2:
       name: Fractal
       builder: "Nejaky Ape"
-      mode: DUO
-      BLUE_SPAWN:
-        - "1,65,-38"
-        - "3,65,-39"
-      RED_SPAWN:
-        - "1,65,-38"
-        - "3,65,-39"
-      PORTAL_ONE:
-        - "-45,55,64"
-        - "-48,53,65"
-      SPECTATOR_SPAWN: "0,81,3"
+      mode: SOLO
+      blue:
+        spawn:
+          loc1: "1,65,-38"
+          loc2: "3,65,-39"
+        cage:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        floor:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        respawn:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        portal:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        base:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+      red:
+        spawn:
+          loc1: "1,65,-6"
+          loc2: "3,65,-8"
+        cage:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        floor:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        respawn:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        portal:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        base:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+      spectator_location: "0,81,3"
     3:
       name: Arena
       builder: "idk jakoby"
-      mode: DUO
-      BLUE_SPAWN:
-        - "1,65,-38"
-        - "3,65,-39"
-      RED_SPAWN:
-        - "-1,66, -6"
-        - "-3, 66, -8"
-      PORTAL_ONE:
-        - "-45,55,64"
-        - "-48,53,65"
-      PORTAL_TWO:
-        - "-49,55,64"
-        - "-45,53,65"
-      SPECTATOR_SPAWN: "0,81,3"
+      mode: SOLO
+      blue:
+        spawn:
+          loc1: "1,65,-38"
+          loc2: "3,65,-39"
+        cage:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        floor:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        respawn:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        portal:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        base:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+      red:
+        spawn:
+          loc1: "1,65,-6"
+          loc2: "3,65,-8"
+        cage:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        floor:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        respawn:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        portal:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+        base:
+          loc1: "0,0,0"
+          loc2: "0,0,0"
+      spectator_location: "0,81,3"
 ClassicDuels:
   maps:
     0:
@@ -82,36 +192,88 @@ ClassicDuels:
 TheBridge:
   maps:
     0:
-      name: Nether
-      builder: "PlanetMC"
+      name: Twilight
+      builder: "Hypixel"
       mode: SOLO
-      BLUE_SPAWN:
-        - "1649,73,1261"
-        - "1649,73,1261"
-      RED_SPAWN:
-        - "1567,73,1261"
-        - "1567,73,1261"
-      BLUE_PORTAL:
-        - "1651,63,1263"
-        - "1653,63,1259"
-      RED_PORTAL:
-        - "1565,63,1259"
-        - "1563,63,1263"
-      SPECTATOR_SPAWN: "1609,74,1261"
-    0:
-      name: Nether
-      builder: "PlanetMC"
+      spectator_location: "0,103,0"
+      blue:
+        spawn:
+          loc1: "-31,104,0"
+          loc2: "-31,104,0"
+        cage:
+          loc1: "-34,108,4"
+          loc2: "-28,103,-4"
+        floor:
+          loc1: "-29,103,3"
+          loc2: "-33,103,-3"
+        respawn:
+          loc1: "-32,98,0"
+          loc2: "-32,98,0"
+        portal:
+          loc1: "-32,90,-2"
+          loc2: "-36,90,2"
+        base:
+          loc1: "-21,74,37"
+          loc2: "-46,128,-13"
+      red:
+        spawn:
+          loc1: "31,104,0"
+          loc2: "31,104,0"
+        cage:
+          loc1: "34,107,-4"
+          loc2: "28,102,4"
+        floor:
+          loc1: "29,103,-3"
+          loc2: "33,103,3"
+        respawn:
+          loc1: "32,98,0"
+          loc2: "32,98,0"
+        portal:
+          loc1: "31,90,2"
+          loc2: "37,90,-2"
+        base:
+          loc1: "19,74,31"
+          loc2: "53,128,-23"
+    1:
+      name: Twilight
+      builder: "Hypixel"
       mode: SOLO
-      BLUE_SPAWN:
-        - "1649,73,1261"
-        - "1649,73,1261"
-      RED_SPAWN:
-        - "1567,73,1261"
-        - "1567,73,1261"
-      BLUE_PORTAL:
-        - "1651,63,1263"
-        - "1653,63,1259"
-      RED_PORTAL:
-        - "1565,63,1259"
-        - "1563,63,1263"
-      SPECTATOR_SPAWN: "1609,74,1261"
+      spectator_location: "0,103,0"
+      blue:
+        spawn:
+          loc1: "-31,104,0"
+          loc2: "-31,104,0"
+        cage:
+          loc1: "-34,108,4"
+          loc2: "-28,103,-4"
+        floor:
+          loc1: "-29,103,3"
+          loc2: "-33,103,-3"
+        respawn:
+          loc1: "-32,98,0"
+          loc2: "-32,98,0"
+        portal:
+          loc1: "-32,91,-2"
+          loc2: "-36,92,2"
+        base:
+          loc1: "-21,74,37"
+          loc2: "-46,128,-13"
+      red:
+        spawn:
+          loc1: "31,104,0"
+          loc2: "31,104,0"
+        cage:
+          loc1: "34,107,-4"
+          loc2: "28,102,4"
+        floor:
+          loc1: "29,103,-3"
+          loc2: "33,103,3"
+        respawn:
+          loc1: "32,98,0"
+          loc2: "32,98,0"
+        portal:
+          loc1: "31,90,2"
+          loc2: "37,90,-2"
+        base:
+          loc1: "21,74,31"
+          loc2: "53,128,-23"
